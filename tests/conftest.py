@@ -9,6 +9,8 @@ from firstsync.connections import get_client
 def _audit_to_tmp(tmp_path, monkeypatch):
     monkeypatch.setenv("FIRSTSYNC_AUDIT_LOG", str(tmp_path / "audit.jsonl"))
     monkeypatch.delenv("FIRSTSYNC_ORGS_DIR", raising=False)
+    monkeypatch.delenv("FIRSTSYNC_MAX_TOOL_CALLS", raising=False)
+    monkeypatch.setattr("firstsync.mcp_server._calls", 0)
     return tmp_path / "audit.jsonl"
 
 

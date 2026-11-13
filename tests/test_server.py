@@ -16,10 +16,38 @@ def _lines(path):
     return [json.loads(line) for line in path.read_text().splitlines()]
 
 
-def test_server_exposes_exactly_the_five_read_tools():
+def test_server_exposes_exactly_the_expected_tools():
     listed = asyncio.run(mcp_server.server.list_tools())
     assert sorted(t.name for t in listed) == sorted(mcp_server.TOOL_NAMES)
+    assert sorted(mcp_server.TOOL_NAMES) == [
+        "mapping_propose",
+        "rule_test",
+        "sf_check_access",
+        "sf_count_records",
+        "sf_describe_object",
+        "sf_sample_records",
+        "target_get_schema",
+    ]
     assert all(t.description for t in listed)
+
+
+def test_tool_call_limit_stops_a_runaway_session(monkeypatch):
+    monkeypatch.setattr(mcp_server, "_calls", 0)
+    monkeypatch.setenv("FIRSTSYNC_MAX_TOOL_CALLS", "2")
+    mcp_server.target_get_schema()
+    mcp_server.target_get_schema()
+    with pytest.raises(ToolError, match="limit of 2 tool calls"):
+        mcp_server.target_get_schema()
+
+
+def test_mapping_tools_are_logged_in_the_map_stage(_audit_to_tmp, tmp_path, monkeypatch):
+    monkeypatch.setenv("FIRSTSYNC_STATE_DIR", str(tmp_path / "state"))
+    mcp_server.rule_test("org_b", "Account.Name", [{"op": "trim"}])
+    with pytest.raises(ToolError):
+        mcp_server.mapping_propose("org_b", [])
+    first, second = _lines(_audit_to_tmp)
+    assert (first["tool"], first["stage"], first["ok"]) == ("rule_test", "map", True)
+    assert (second["tool"], second["stage"], second["ok"]) == ("mapping_propose", "map", False)
 
 
 def test_no_tool_accepts_a_credential():

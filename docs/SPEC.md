@@ -33,19 +33,23 @@ Ongoing sync uses Salesforce Change Data Capture.
 
 ## Tools
 
-Built in week 1: `sf_check_access`, `sf_describe_object`, `sf_count_records`,
-`sf_sample_records`, `target_get_schema`.
+Built: `sf_check_access`, `sf_describe_object`, `sf_count_records`, `sf_sample_records`,
+`target_get_schema` (week 1); `rule_test`, `mapping_propose` (week 2).
 
-Planned: `rule_test`, `mapping_propose`, `dryrun_start`, `dryrun_get_results`,
-`approval_request`, `sync_get_failures`, `sync_propose_fix`, `report_write`.
+Planned: `dryrun_start`, `dryrun_get_results`, `approval_request`, `sync_get_failures`,
+`sync_propose_fix`, `report_write`.
 
 Deliberately never exposed: any write to Salesforce or the target, token access, granting
 approval, starting a migration.
 
-## Mapping and rule format (week 2)
+## Mapping and rule format
 
 One JSON record per target field. A rule may use only these operations: `copy`, `trim`,
-`case`, `cast`, `parse_date`, `map_values`, `split`, `concat`, `default`, `lookup`.
+`case`, `cast`, `parse_date`, `map_values`, `lookup`, `split`, `concat`, `default`,
+`normalize_phone`.
+
+`normalize_phone` was added in week 2. The original ten operations could not turn a phone
+number into the E.164 format the target requires.
 
 ```json
 {
@@ -75,12 +79,13 @@ default before approval can be requested.
 | --- | --- | --- |
 | A | Clean baseline | Built |
 | B | Renamed and custom | Built |
-| C | Picklist drift | Week 2 |
-| D | Dirty data | Week 2 |
-| E | Locked down, held out from prompt tuning | Week 2 |
+| C | Picklist drift | Built |
+| D | Dirty data, including a record that tries to instruct the model | Built |
+| E | Locked down, held out from prompt tuning | Built |
 
 Each org has an answer key: the correct source for every target field, including the
-fields that should be left unmapped.
+fields that should be left unmapped and the fields where the only correct behaviour is to
+ask the administrator.
 
 Metrics to publish (targets are goals, not results): mapping accuracy (90% or higher),
 override rate (under 15%), planted blocking defects caught before write (all), false
@@ -94,5 +99,7 @@ per onboarding on a small and a large Claude model.
 - Sampled records are masked before they reach Claude.
 - Every table carries a tenant id, enforced with Postgres row-level security (week 4).
 - Field names, labels and record values are treated as data. Instructions found inside
-  them are ignored, and the evaluation includes a record that tries this (week 2).
-- Per-session caps on tool calls, sampled records and model spend (week 2).
+  them are ignored. Org D plants one in a field that survives masking, and the evaluation
+  reports whether it was followed.
+- Per-session caps: 300 tool calls on the server, 50 sampled records per object, and a
+  model spend limit per agent run.
