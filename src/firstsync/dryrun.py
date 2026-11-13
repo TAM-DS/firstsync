@@ -159,6 +159,65 @@ def run_dry_run(
     )
 
 
+class Issue(BaseModel):
+    """One field of one record that did not come out clean."""
+
+    target: str
+    reason: str
+    severity: Severity
+    source_field: str | None
+
+
+def build_row(
+    record: dict[str, Any],
+    fields: dict[str, dict[str, Any]],
+    mapped: dict[str, dict[str, Any] | None],
+    source_object: str,
+) -> tuple[dict[str, Any], str, list[Issue]]:
+    """Build one target row the way the migration would, and judge it.
+
+    This is the single row builder: the dry-run and the migration both call it, so what
+    the dry-run showed the administrator is exactly what the migration will do.
+    """
+    table = next(iter(fields.values())).get("_table", "") if fields else ""
+    row: dict[str, Any] = {}
+    status = "clean"
+    issues: list[Issue] = []
+    for name, field in fields.items():
+        proposal = mapped[name]
+        if proposal is None:
+            value, failure = None, None
+            reason = check_target_value(field, None)
+            src = None
+        else:
+            obj, src = _split(proposal.get("source"))
+            raw = record.get(src) if obj == source_object and src else None
+            failure, reason, value = None, None, None
+            if obj is not None and obj != source_object:
+                reason = f"source is on {obj}, but this table is read from {source_object}"
+            else:
+                try:
+                    value = apply_rule(proposal.get("rule", []), raw, record)
+                    reason = check_target_value(field, value)
+                except RuleFailure as exc:
+                    failure, reason = exc, str(exc)
+        if reason is None:
+            row[name] = value
+            continue
+        severity = _severity(field, failure or RuleFailure(reason))
+        if RANK[severity] > RANK[status]:
+            status = severity
+        issues.append(
+            Issue(
+                target=f"{table}.{name}" if table else name,
+                reason=reason,
+                severity=severity,
+                source_field=src,
+            )
+        )
+    return row, status, issues
+
+
 def _one_record(
     record: dict[str, Any],
     record_id: str,
@@ -172,45 +231,24 @@ def _one_record(
     rows: list[tuple[str, dict[str, Any]]],
     shown: list[dict[str, Any]],
 ) -> None:
-    row: dict[str, Any] = {}
+    named = {n: {**f, "_table": table} for n, f in fields.items()}
+    row, status, issues = build_row(record, named, mapped, source_object)
     visible_row: dict[str, Any] = {}
-    status = "clean"
-    for name, field in fields.items():
+    for name, value in row.items():
         proposal = mapped[name]
-        target = f"{table}.{name}"
-        if proposal is None:
-            value, failure = None, None
-            reason = check_target_value(field, None)
-            treatment = "pass"
-        else:
-            obj, src = _split(proposal.get("source"))
-            treatment = treatments.get(src or "", "pass") if obj else "pass"
-            raw = record.get(src) if obj == source_object and src else None
-            failure, reason, value = None, None, None
-            if obj is not None and obj != source_object:
-                reason = f"source is on {obj}, but this table is read from {source_object}"
-            else:
-                try:
-                    value = apply_rule(proposal.get("rule", []), raw, record)
-                    reason = check_target_value(field, value)
-                except RuleFailure as exc:
-                    failure, reason = exc, str(exc)
-        if reason is None:
-            row[name] = value
-            hidden = treatment in ("shape", "summary") or _uses_concat(proposal)
-            visible_row[name] = display("shape", value) if hidden else value
-            continue
-        severity = _severity(field, failure or RuleFailure(reason))
-        if RANK[severity] > RANK[status]:
-            status = severity
-        source_field = _split((proposal or {}).get("source"))[1]
-        shown_input = display(treatment, record.get(source_field or ""))
+        src = _split((proposal or {}).get("source"))[1]
+        treatment = treatments.get(src or "", "pass")
+        hidden = treatment in ("shape", "summary") or _uses_concat(proposal)
+        visible_row[name] = display("shape", value) if hidden else value
+    for issue in issues:
+        treatment = treatments.get(issue.source_field or "", "pass")
+        shown_input = display(treatment, record.get(issue.source_field or ""))
         group = groups.setdefault(
-            (target, reason),
+            (issue.target, issue.reason),
             FailureGroup(
-                target=target,
-                reason=reason,
-                severity=severity,
+                target=issue.target,
+                reason=issue.reason,
+                severity=issue.severity,
                 count=0,
                 record_ids=[],
                 example_input=shown_input,

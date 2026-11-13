@@ -23,6 +23,7 @@ def test_server_exposes_exactly_the_expected_tools():
         "dryrun_get_results",
         "dryrun_start",
         "mapping_propose",
+        "migration_get_status",
         "rule_test",
         "sf_check_access",
         "sf_count_records",

@@ -16,7 +16,7 @@ from typing import Any
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from firstsync import audit, dryrun, tools
+from firstsync import audit, dryrun, migrate, tools
 from firstsync.config import get_settings
 from firstsync.connections import get_client
 from firstsync.rules import RULE_HELP
@@ -43,6 +43,7 @@ TOOL_NAMES = (
     "mapping_propose",
     "dryrun_start",
     "dryrun_get_results",
+    "migration_get_status",
 )
 
 _calls = 0
@@ -218,6 +219,26 @@ def dryrun_get_results(connection: str, run_id: str | None = None) -> dict[str, 
         connection,
         {"run_id": run_id},
         lambda: dryrun.summary(dryrun.load(connection, run_id)),
+    )
+
+
+MIGRATION_STATUS_DOC = (
+    "Return the result of a stored migration run for a connection: the latest, or "
+    "'run_id' for a specific run. Counts per table (inserted, updated, unchanged), the "
+    "record Ids that were skipped and why, and who approved the migration and when. "
+    "Read-only: there is no tool that approves proposals or starts a migration — both "
+    "happen at the CLI, by a person."
+)
+
+
+@server.tool(description=MIGRATION_STATUS_DOC)
+def migration_get_status(connection: str, run_id: str | None = None) -> dict[str, Any]:
+    return _logged(
+        "migration_get_status",
+        "migrate",
+        connection,
+        {"run_id": run_id},
+        lambda: migrate.status_summary(migrate.load(connection, run_id)),
     )
 
 
