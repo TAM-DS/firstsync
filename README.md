@@ -132,11 +132,18 @@ Three runs per org with `claude-sonnet-5-5`, mapping prompt `a2d2c0412040`:
 | C | 100%, 100%, 100% | 2 | 3, 4, 3 | 0, 0, 0 | 19 | $0.16 |
 | D | 100%, 100%, 100% | 0 | 5, 6, 6 | 0, 0, 0 | 19 | $0.15 |
 
-Org F, the decoys, run afterwards with the same model and prompt: 100% in all three runs
-(87 of 87 fields), with 3, 0 and 2 extra questions, 21 turns and about $0.20 per run.
-**The raw file for those three runs was lost** to a bug in the evaluation script, since
-fixed, that overwrote results when a single org was run. The figures are from the run's
-terminal output, and a rerun is pending.
+Org F, the decoys, with the same model and prompt: 100% in all three runs (87 of 87
+fields). Claude chose the right field over the decoy every time, with reasons drawn from
+the values ("Business Phone values are short 5-character extensions that cannot be E.164;
+MobilePhone holds full US-format numbers"). It asked one question across the three runs,
+an allowed one about tasks that have not happened yet, and none that were extra. About
+$0.18 per run.
+
+An earlier three-run pass on org F also scored 87 of 87, with 5 extra questions, but its
+raw file was lost to a bug in the evaluation script, since fixed, that overwrote results
+when a single org was run. The figures above are from the rerun, which is in the results
+file. The rerun followed one change to a tool description (stating that `rule_test` runs
+on real values), so the two passes are not a like-for-like repeat.
 
 ### Small model against large
 
@@ -229,7 +236,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
-| Claude's mapping accuracy | Three runs per org on A to D and F, on two models. Raw results for Sonnet on org F were lost and need a rerun. Org E not yet run. |
+| Claude's mapping accuracy | Three runs per org on A to D and F, on two models, with raw results in `results/`. Org E not yet run. |
 | Salesforce REST client | Against mocked HTTP only. **Not yet run against a live org.** |
 | Live loader (`seed_org.py --live`) | Against mocked HTTP only. **Not yet run against a live org.** |
 | Org B metadata (`orgs/org_b/salesforce`) | XML is well formed. **Not yet deployed to a live org.** Orgs C, D and E have no live metadata yet. |
