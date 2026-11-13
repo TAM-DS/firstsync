@@ -138,9 +138,9 @@ model cost. Raw output: [results/claude-claude-sonnet-5-5.json](results/claude-c
 - Source accuracy is at the ceiling, so these four orgs cannot yet separate one prompt or
   model from another. Harder cases are planned.
 - "Accuracy" scores the source field and whether a required question was asked. It does
-  not yet score the transformation rule. In one of the 36 run-and-org-B-date cases checked
-  by hand, Claude proposed the right source with no date-parsing rule. Week 3's dry-run
-  scores rules by their effect on the data.
+  not yet score the transformation rule. Checking rules by hand found one that would
+  fail: in one org B run, a text date was proposed with no date-parsing step. Week 3's
+  dry-run scores rules by their effect on the data.
 - The prompt was revised once, and the answer keys twice, after seeing results on these
   same orgs. Each key change allowed a question that turned out to be legitimate; none
   changed a source. The first run also scored 100% but asked 17 extra questions in 4

@@ -102,9 +102,9 @@ that loosening was fair.
 - **Rules are not scored.** In one of three org B runs, Claude proposed `Account.Site` for
   `accounts.customer_since` with an empty rule, so the text date would not have been
   parsed. It had asked the administrator about that field, and may have been waiting for
-  the answer, but the proposal as stored would fail a dry-run. In the other 35 cases
-  checked (`related_type`, `occurred_at`, `phone`, `currency`, `kind` across all runs),
-  the rule was the right operation.
+  the answer, but the proposal as stored would fail a dry-run. For five other fields
+  checked across all 12 runs (`related_type`, `occurred_at`, `phone`, `currency`, `kind`;
+  60 rules), the operation proposed was a workable one every time.
 - **An invented example.** In one org D run, Claude's question quoted a date,
   "03/04/2025", that is not in the data. It had only seen the masked shape, and the other
   two runs correctly quoted the shape. No real customer value appears anywhere in the
