@@ -231,6 +231,7 @@
           "seconds": 36.8,
           "cost_usd": 0.15220200000000003,
           "tool_calls": 17,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -844,6 +845,7 @@
           "seconds": 33.3,
           "cost_usd": 0.13517880000000002,
           "tool_calls": 17,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -1456,6 +1458,7 @@
           "seconds": 33.7,
           "cost_usd": 0.13180830000000002,
           "tool_calls": 17,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -2074,6 +2077,7 @@
           "seconds": 45.1,
           "cost_usd": 0.1749764,
           "tool_calls": 20,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "low",
@@ -2716,6 +2720,7 @@
           "seconds": 44.7,
           "cost_usd": 0.17208710000000002,
           "tool_calls": 20,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "low",
@@ -3359,6 +3364,7 @@
           "seconds": 42.5,
           "cost_usd": 0.1627678,
           "tool_calls": 19,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "low",
@@ -3999,6 +4005,7 @@
           "seconds": 45.0,
           "cost_usd": 0.16382210000000003,
           "tool_calls": 18,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -4728,6 +4735,7 @@
           "seconds": 44.2,
           "cost_usd": 0.16247129999999999,
           "tool_calls": 18,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -5468,6 +5476,7 @@
           "seconds": 44.7,
           "cost_usd": 0.16168500000000002,
           "tool_calls": 18,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -6211,6 +6220,25 @@
           "seconds": 43.8,
           "cost_usd": 0.1495617,
           "tool_calls": 18,
+          "dryrun_defects": {
+            "duplicate_contacts": {
+              "planted": 6,
+              "found": 6
+            },
+            "missing_email": {
+              "planted": 5,
+              "found": 5
+            },
+            "missing_amount": {
+              "planted": 4,
+              "found": 4
+            },
+            "short_phone": {
+              "planted": 3,
+              "found": 3
+            },
+            "defects_found": "4/4"
+          },
           "proposals": {
             "accounts.customer_since": {
               "confidence": "medium",
@@ -6833,6 +6861,25 @@
           "seconds": 45.6,
           "cost_usd": 0.1590654,
           "tool_calls": 18,
+          "dryrun_defects": {
+            "duplicate_contacts": {
+              "planted": 6,
+              "found": 6
+            },
+            "missing_email": {
+              "planted": 5,
+              "found": 5
+            },
+            "missing_amount": {
+              "planted": 4,
+              "found": 4
+            },
+            "short_phone": {
+              "planted": 3,
+              "found": 3
+            },
+            "defects_found": "4/4"
+          },
           "proposals": {
             "accounts.customer_since": {
               "confidence": "medium",
@@ -7550,6 +7597,25 @@
           "seconds": 41.4,
           "cost_usd": 0.14739739999999998,
           "tool_calls": 18,
+          "dryrun_defects": {
+            "duplicate_contacts": {
+              "planted": 6,
+              "found": 6
+            },
+            "missing_email": {
+              "planted": 5,
+              "found": 5
+            },
+            "missing_amount": {
+              "planted": 4,
+              "found": 4
+            },
+            "short_phone": {
+              "planted": 3,
+              "found": 3
+            },
+            "defects_found": "4/4"
+          },
           "proposals": {
             "accounts.customer_since": {
               "confidence": "medium",
@@ -8184,7 +8250,7 @@
           "seconds": 44.4,
           "cost_usd": 0.1912681,
           "tool_calls": 20,
-          "is_error": false,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -8906,7 +8972,7 @@
           "seconds": 39.5,
           "cost_usd": 0.1669702,
           "tool_calls": 19,
-          "is_error": false,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -9542,7 +9608,7 @@
           "seconds": 45.3,
           "cost_usd": 0.182155,
           "tool_calls": 20,
-          "is_error": false,
+          "dryrun_defects": null,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -10046,5 +10112,6 @@
     }
   },
   "date": "2026-11-13T13:00:36+00:00",
-  "mean_accuracy": 1.0
+  "mean_accuracy": 1.0,
+  "rescored": "2026-11-13T21:33:51+00:00"
 }

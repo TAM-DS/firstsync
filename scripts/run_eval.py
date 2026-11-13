@@ -23,8 +23,10 @@ from pathlib import Path
 from firstsync import mapping
 from firstsync.agent import MAP_SYSTEM, prompt_hash, run_agent
 from firstsync.connections import get_client
+from firstsync.dryrun import run_dry_run
 from firstsync.env import load_dotenv
 from firstsync.eval.baseline import baseline_mappings
+from firstsync.eval.defects import score_defects
 from firstsync.eval.score import OUTCOMES, score
 from firstsync.orgs.answer_keys import ANSWER_KEYS
 from firstsync.orgs.generate import HELD_OUT
@@ -48,7 +50,15 @@ def run_once(org: str, baseline: bool) -> dict:
         info = {k: outcome.get(k) for k in ("turns", "seconds", "cost_usd", "tool_calls")}
         info["is_error"] = outcome["is_error"]
     result = score(ANSWER_KEYS[org], store.load())
+    result["dryrun_defects"] = _defects(org, store.load())
     return {**result, **info, "proposals": store.load()}
+
+
+def _defects(org: str, proposals: dict) -> dict | None:
+    """Run the dry-run over the proposals and check the planted defects were caught."""
+    if not (ANSWER_KEYS[org].get("defects") and proposals):
+        return None
+    return score_defects(ANSWER_KEYS[org], run_dry_run(get_client(org), org, proposals, 2000))
 
 
 HEADER = (
@@ -72,6 +82,18 @@ def row(org: str, n: int, result: dict) -> str:
     )
 
 
+def _print_defects(result: dict) -> None:
+    d = result.get("dryrun_defects")
+    if not d:
+        return
+    parts = [
+        f"{name} {v['found']}/{v['planted']}" + (" MISSED" if v.get("missed_ids") else "")
+        for name, v in d.items()
+        if isinstance(v, dict)
+    ]
+    print(f"         dryrun defects {d['defects_found']}: " + ", ".join(parts))
+
+
 def rescore(path: Path) -> int:
     """Score the proposals saved in a results file again with the current scorer."""
     report = json.loads(path.read_text(encoding="utf-8"))
@@ -81,9 +103,11 @@ def rescore(path: Path) -> int:
         for n, run in enumerate(entry["runs"], start=1):
             info = {k: run.get(k) for k in ("turns", "seconds", "cost_usd", "tool_calls")}
             result = {**score(ANSWER_KEYS[org], run["proposals"]), **info}
+            result["dryrun_defects"] = _defects(org, run["proposals"])
             result["proposals"] = run["proposals"]
             rescored.append(result)
             print(row(org, n, result))
+            _print_defects(result)
             for target in result["extra_questions"]:
                 print(
                     f"         extra question on {target}: "
@@ -157,6 +181,7 @@ def main() -> int:
             result = run_once(org, args.baseline)
             results.append(result)
             print(row(org, n, result))
+            _print_defects(result)
         mean = sum(r["accuracy"] for r in results) / len(results)
         report["orgs"][org] = {
             "mean_accuracy": round(mean, 4),

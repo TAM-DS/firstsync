@@ -8,11 +8,11 @@ stored. Storing a proposal changes no customer data; it waits for a human to app
 from __future__ import annotations
 
 import json
-import os
 import re
 from pathlib import Path
 from typing import Any
 
+from firstsync.config import get_settings
 from firstsync.rules import asks_admin, concat_fields, validate_rule
 from firstsync.salesforce import ObjectNotAccessible, SalesforceClient
 from firstsync.target import TARGET_SCHEMA
@@ -125,7 +125,7 @@ def validate_mapping(mapping: Any, schema: SchemaCache) -> list[str]:
 
 
 def state_dir() -> Path:
-    return Path(os.environ.get("FIRSTSYNC_STATE_DIR", ".firstsync"))
+    return get_settings().state_dir
 
 
 class ProposalStore:
@@ -173,7 +173,7 @@ def propose(
     for mapping in mappings:
         errors = validate_mapping(mapping, schema)
         target = mapping.get("target") if isinstance(mapping, dict) else None
-        if errors:
+        if errors or not isinstance(target, str):
             rejected.append({"target": target, "errors": errors})
             continue
         proposals[target] = {

@@ -10,14 +10,14 @@ Run it over stdio:  python -m firstsync.mcp_server
 
 from __future__ import annotations
 
-import os
 from collections.abc import Callable
 from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from firstsync import audit, tools
+from firstsync import audit, dryrun, tools
+from firstsync.config import get_settings
 from firstsync.connections import get_client
 from firstsync.rules import RULE_HELP
 from firstsync.salesforce import SalesforceError
@@ -41,6 +41,8 @@ TOOL_NAMES = (
     "target_get_schema",
     "rule_test",
     "mapping_propose",
+    "dryrun_start",
+    "dryrun_get_results",
 )
 
 _calls = 0
@@ -50,7 +52,7 @@ def _count_call() -> None:
     """Stop a session that makes far more tool calls than an onboarding needs."""
     global _calls
     _calls += 1
-    limit = int(os.environ.get("FIRSTSYNC_MAX_TOOL_CALLS", "300"))
+    limit = get_settings().max_tool_calls
     if _calls > limit:
         raise ToolError(
             f"This session has reached its limit of {limit} tool calls. "
@@ -177,6 +179,45 @@ def mapping_propose(connection: str, mappings: list[dict[str, Any]]) -> dict[str
         connection,
         {"mappings": mappings},
         lambda: tools.mapping_propose(get_client(connection), connection, mappings),
+    )
+
+
+DRYRUN_START_DOC = (
+    "Run the stored mapping proposals for a connection over real records, without writing "
+    "anything. Every record is built the way the migration would build it, checked against "
+    "the target's rules, and counted as clean, warning (an optional value would be dropped), "
+    "needs_decision (the administrator must decide), or blocking (the record cannot load). "
+    "Failures come back grouped by target field and reason, with source record Ids and one "
+    "masked example each; records that would collide on a table's natural key are reported "
+    "as duplicates. 'limit' caps how many records are read per object (default 50, max "
+    "2000). The result is stored; nothing is written to customer data or to the target."
+)
+DRYRUN_RESULTS_DOC = (
+    "Return a stored dry-run for a connection: the latest one, or 'run_id' for a specific "
+    "run. Same shape as dryrun_start returns. Use this instead of re-running when nothing "
+    "has changed."
+)
+
+
+@server.tool(description=DRYRUN_START_DOC)
+def dryrun_start(connection: str, limit: int = 50) -> dict[str, Any]:
+    return _logged(
+        "dryrun_start",
+        "dryrun",
+        connection,
+        {"limit": limit},
+        lambda: dryrun.summary(dryrun.start(get_client(connection), connection, limit)),
+    )
+
+
+@server.tool(description=DRYRUN_RESULTS_DOC)
+def dryrun_get_results(connection: str, run_id: str | None = None) -> dict[str, Any]:
+    return _logged(
+        "dryrun_get_results",
+        "dryrun",
+        connection,
+        {"run_id": run_id},
+        lambda: dryrun.summary(dryrun.load(connection, run_id)),
     )
 
 

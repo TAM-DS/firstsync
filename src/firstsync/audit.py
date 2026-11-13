@@ -1,23 +1,23 @@
 """Append-only log of every tool call.
 
 Each line records what was asked and a hash of what was returned, so a reviewer can
-confirm which evidence a proposal was built on without storing the evidence twice.
+confirm which evidence a proposal was built on without storing the evidence twice. Every
+line carries a run ID, so all the calls of one onboarding session can be pulled together.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
-import os
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-DEFAULT_PATH = ".firstsync/audit.jsonl"
+from firstsync.config import get_settings
 
 
 def log_path() -> Path:
-    return Path(os.environ.get("FIRSTSYNC_AUDIT_LOG", DEFAULT_PATH))
+    return get_settings().audit_log
 
 
 def output_hash(result: Any) -> str:
@@ -36,6 +36,7 @@ def record(
 ) -> dict[str, Any]:
     entry = {
         "ts": datetime.now(UTC).isoformat(timespec="seconds"),
+        "run_id": get_settings().run_id,
         "tool": tool,
         "stage": stage,
         "connection": connection,

@@ -83,6 +83,11 @@ def field_treatments(describe: dict[str, Any], records: list[dict[str, Any]]) ->
     return treatments
 
 
+def display(treatment: str, value: Any) -> Any:
+    """How one value is shown to the model, given its field's treatment."""
+    return _apply(treatment, value)
+
+
 def _apply(treatment: str, value: Any) -> Any:
     if value is None or treatment in ("pass", "categorical"):
         return value

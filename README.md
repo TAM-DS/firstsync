@@ -8,10 +8,14 @@ A support engineer usually does that by hand. FirstSync gives the work to Claude
 inspects the customer's org, proposes how each field maps, and explains every failure in
 plain language. Deterministic code decides what actually runs.
 
-> **Status: week 2 of 6.** Claude can inspect an org and propose a validated mapping for
-> every target field, and an evaluation scores those proposals against answer keys for
-> six synthetic orgs. Dry-run, approval, migration and sync are not built yet. This is a
-> reference implementation with no customers. See
+> **Status: week 3 of 6.** Claude can inspect an org and propose a validated mapping for
+> every target field; an evaluation scores those proposals against answer keys for six
+> synthetic orgs; and a deterministic dry-run engine now executes stored proposals over
+> real records — writing nothing — and reports, per record, whether it would load,
+> grouped by root cause, with duplicates flagged by natural key. The evaluation checks
+> that the pipeline catches the defects planted in org D (it catches 4 of 4, for both
+> models tested). Approval, migration and sync are not built yet. This is a reference
+> implementation with no customers. See
 > [What is and is not tested](#what-is-and-is-not-tested).
 
 ## The rule the design is built on
@@ -30,7 +34,7 @@ The full design is in [docs/SPEC.md](docs/SPEC.md).
 
 ## What works today
 
-Seven tools, served from one MCP server:
+Nine tools, served from one MCP server:
 
 | Tool | What it does |
 | --- | --- |
@@ -41,6 +45,20 @@ Seven tools, served from one MCP server:
 | `target_get_schema` | The target app's tables, fields, allowed values and required fields |
 | `rule_test` | Runs a transformation rule on a sample and reports what failed and why |
 | `mapping_propose` | Validates mapping proposals and stores the valid ones for approval |
+| `dryrun_start` | Executes stored proposals over real records without writing, grouped by root cause |
+| `dryrun_get_results` | Returns a stored dry-run instead of re-running one |
+
+The dry-run engine is deterministic code, not the model. Every record is built the way
+the migration would build it and comes back as **clean**, **warning** (an optional value
+would be dropped), **needs_decision** (an unmapped picklist value the administrator must
+rule on) or **blocking** (the record cannot load). Failures are grouped by target field
+and reason — fifty records failing for one cause read as one finding — with source
+record Ids kept and example values masked. Records that would collide on a table's
+natural key (account name, contact email) are reported as likely duplicates. A record
+that crashes the engine is written to a dead-letter file and counted, never silently
+dropped, and the REST client retries transient failures with exponential backoff and
+jitter. There is also a CLI: `firstsync dryrun <org>` exits non-zero if anything blocks,
+so it can gate a pipeline.
 
 Six synthetic Salesforce orgs, each with an answer key:
 
@@ -64,7 +82,7 @@ Pythons refuse installs outside one.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q                               # 174 tests, no network, no API key
+pytest -q                               # 185 tests, no network, no API key
 python scripts/run_eval.py --baseline   # the evaluation, with name matching instead of a model
 python -m firstsync.mcp_server          # the MCP server, over stdio
 ```
@@ -233,6 +251,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | Part | Tested how |
 | --- | --- |
 | Tools, masking, rules, mapping validation, scoring, fixtures, answer keys | Unit tests, offline |
+| Dry-run engine | Unit tests against the planted defects in org D, plus property-based tests (Hypothesis) that any limit is safe and re-running never changes the verdict |
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |

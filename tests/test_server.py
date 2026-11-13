@@ -20,6 +20,8 @@ def test_server_exposes_exactly_the_expected_tools():
     listed = asyncio.run(mcp_server.server.list_tools())
     assert sorted(t.name for t in listed) == sorted(mcp_server.TOOL_NAMES)
     assert sorted(mcp_server.TOOL_NAMES) == [
+        "dryrun_get_results",
+        "dryrun_start",
         "mapping_propose",
         "rule_test",
         "sf_check_access",
