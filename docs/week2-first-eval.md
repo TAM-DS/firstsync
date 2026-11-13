@@ -26,27 +26,27 @@ Every source field was right, and every required question was asked. But Claude 
 questions at all, so an agent that asked about everything would have scored the same.
 The scorer now reports them.
 
-The 28 questions beyond the required 5 fall into three groups.
-
-**Caused by a gap in the tool descriptions (8).** On `activities.related_type` and
-`activities.occurred_at`, Claude asked whether "the pipeline" could derive a record type
-from an Id prefix or turn a date into a timestamp, "since rule ops here cannot". They
-can: `lookup` and `cast` do exactly that. The tools listed the operation names but not
-their parameters, so Claude could not tell. This was a defect in the tools, not in the
-model. The tool descriptions now document every operation.
+Of the 28 questions beyond the required 5, 11 are now allowed by the answer keys and 17
+count as extra. Separately, 8 of the 28 trace to a defect in the tools.
 
 **Real findings the answer key had not allowed for (11).** In org D, Claude asked what
 should happen to contacts with no email, opportunities with no amount, and phone numbers
-with no area code. Those are the planted defects, and only the administrator can decide
-them. Across the orgs it also asked to confirm the USD default where no currency field
-exists, and what to do with tasks that have a due date but have not happened. The answer
-keys now mark these fields as "may ask": a question is legitimate, not required.
+with no area code (3). Those are the planted defects, and only the administrator can
+decide them. In every org it asked to confirm the USD default where no currency field
+exists (4), and what to do with tasks that have a due date but have not happened (4). The
+answer keys now mark these fields as "may ask": a question is legitimate, not required.
 
-**Unnecessary (17, after the two changes above are applied to this run).** Mostly
-optional target fields with no source, where Claude asked whether the data might exist
-somewhere it could not see (`owner_email`, `customer_since`, `tier`), plus requests to
-confirm what the values already showed. The prompt now says: ask only when the answer
-would change what gets migrated and the org cannot tell you.
+**Extra (17).** Optional target fields with no source, where Claude asked whether the
+data might exist somewhere it could not see: `owner_email` (4), `customer_since` (1),
+`tier` (1). Requests to confirm or extend what the values already showed: `contacts.role`
+(4) and `activities.kind` (3). And `activities.related_type` (4), covered next.
+
+**Caused by a gap in the tool descriptions (8 of the 28).** On `activities.related_type`
+(4, counted as extra) and `activities.occurred_at` (4, counted as allowed), Claude asked
+whether "the pipeline" could derive a record type from an Id prefix or turn a date into a
+timestamp, "since rule ops here cannot". They can: `lookup` and `cast` do exactly that.
+The tools listed the operation names but not their parameters, so Claude could not tell.
+This was a defect in the tools, not in the model.
 
 ## What changed as a result
 
