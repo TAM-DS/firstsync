@@ -8,10 +8,10 @@ in week 4 without changing any tool signature.
 
 from __future__ import annotations
 
-import os
 import re
 from pathlib import Path
 
+from firstsync.config import get_settings
 from firstsync.salesforce import FixtureSalesforceClient, RestSalesforceClient, SalesforceClient
 
 HANDLE = re.compile(r"^[a-z][a-z0-9_]{0,39}$")
@@ -22,8 +22,7 @@ class UnknownConnection(ValueError):
 
 
 def orgs_dir() -> Path:
-    override = os.environ.get("FIRSTSYNC_ORGS_DIR")
-    return Path(override) if override else Path(__file__).resolve().parents[2] / "orgs"
+    return get_settings().orgs_dir or Path(__file__).resolve().parents[2] / "orgs"
 
 
 def available_fixtures() -> list[str]:

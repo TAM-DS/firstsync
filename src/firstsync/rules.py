@@ -287,9 +287,9 @@ def apply_rule(rule: list[dict[str, Any]], value: Any, record: dict[str, Any] | 
         elif op == "lookup":
             value = _lookup(str(value)[: step["prefix_length"]], step, value)
         elif op == "split":
-            parts = str(value).split(step["separator"])
+            pieces = str(value).split(step["separator"])
             try:
-                value = parts[step["index"]].strip()
+                value = pieces[step["index"]].strip()
             except IndexError:
                 raise RuleFailure("value has too few parts to split") from None
         elif op == "normalize_phone":
@@ -334,8 +334,8 @@ def check_target_value(field: dict[str, Any], value: Any) -> str | None:
             return "value is not an ISO date"
         return None
     if kind == "timestamp":
-        ok = re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", value)
-        return None if ok else "value is not an ISO UTC timestamp"
+        stamp = re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", value)
+        return None if stamp else "value is not an ISO UTC timestamp"
     if field["name"] == "phone":
         return None if E164.match(value) else "value is not an E.164 phone number"
     return None

@@ -7,6 +7,8 @@ the environment; the portal's OAuth flow replaces that in week 4.
 from __future__ import annotations
 
 import os
+import random
+import time
 from typing import Any
 
 import httpx
@@ -20,6 +22,16 @@ from firstsync.salesforce.base import (
 
 # Compound fields cannot be selected alongside their parts in every context; skip them.
 UNSAMPLED_TYPES = {"address", "location"}
+
+# Worth retrying: rate limits and transient server errors. 400/401/403/404 are not.
+RETRY_STATUSES = {429, 500, 502, 503, 504}
+MAX_ATTEMPTS = 4
+BASE_DELAY = 0.5  # seconds; grows 0.5, 1, 2 with jitter
+
+
+def _sleep_before(attempt: int, sleep: Any = time.sleep) -> None:
+    """Exponential backoff with full jitter, so retries from many workers spread out."""
+    sleep(random.uniform(0, BASE_DELAY * (2**attempt)))
 
 
 class RestSalesforceClient:
@@ -48,17 +60,30 @@ class RestSalesforceClient:
         return cls(instance_url, access_token, os.environ.get("SF_API_VERSION", "v62.0"))
 
     def _get(self, path: str, params: dict[str, str] | None = None) -> dict[str, Any]:
-        try:
-            response = self._http.get(path, params=params)
-        except httpx.HTTPError as exc:
-            raise SalesforceError(f"Salesforce request failed: {exc}") from exc
-        if response.status_code in (403, 404):
-            raise ObjectNotAccessible(f"Salesforce returned {response.status_code} for {path}.")
-        if response.status_code >= 400:
-            raise SalesforceError(
-                f"Salesforce returned {response.status_code} for {path}: {response.text[:300]}"
-            )
-        return response.json()
+        """GET with retries. Reads are idempotent, so retrying a timeout is always safe."""
+        last_error: str = ""
+        for attempt in range(MAX_ATTEMPTS):
+            if attempt:
+                _sleep_before(attempt - 1)
+            try:
+                response = self._http.get(path, params=params)
+            except httpx.HTTPError as exc:
+                last_error = f"Salesforce request failed: {exc}"
+                continue
+            if response.status_code in RETRY_STATUSES:
+                last_error = f"Salesforce returned {response.status_code} for {path}."
+                continue
+            if response.status_code in (403, 404):
+                raise ObjectNotAccessible(
+                    f"Salesforce returned {response.status_code} for {path}."
+                )
+            if response.status_code >= 400:
+                raise SalesforceError(
+                    f"Salesforce returned {response.status_code} for {path}: "
+                    f"{response.text[:300]}"
+                )
+            return response.json()
+        raise SalesforceError(f"{last_error} Gave up after {MAX_ATTEMPTS} attempts.")
 
     def accessible_objects(self) -> list[dict[str, Any]]:
         listed = {o["name"]: o for o in self._get("/sobjects")["sobjects"]}

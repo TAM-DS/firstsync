@@ -1,7 +1,9 @@
 """The target schema: a small reference customer-success app.
 
 Four tables. `external_id` on every table holds the Salesforce record Id so a migration
-can be re-run without creating duplicates. schema.sql is the same schema as Postgres DDL.
+can be re-run without creating duplicates. `natural_key` names the fields that identify
+the same real-world thing, which the dry-run uses to warn about likely duplicates.
+schema.sql is the same schema as Postgres DDL.
 """
 
 from __future__ import annotations
@@ -30,6 +32,7 @@ TARGET_SCHEMA: dict[str, Any] = {
     "tables": {
         "accounts": {
             "description": "A customer company.",
+            "natural_key": ["name"],
             "fields": [
                 _field("external_id", "text", required=True, note="Source record Id."),
                 _field("name", "text", required=True),
@@ -42,6 +45,7 @@ TARGET_SCHEMA: dict[str, Any] = {
         },
         "contacts": {
             "description": "A person at a customer company.",
+            "natural_key": ["email"],
             "fields": [
                 _field("external_id", "text", required=True, note="Source record Id."),
                 _field("account_external_id", "text", required=True),
