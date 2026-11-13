@@ -199,7 +199,11 @@ def rule_test(
         "failures": sorted(failures.values(), key=lambda f: -f["count"]),
         "unmapped_values": [{"value": v, "count": c} for v, c in sorted(unmapped.items())],
         "examples": list(examples.values())[:6],
-        "note": "Run on a sample of at most 50 records. Values are masked as in samples.",
+        "note": (
+            "The rule ran on the real values of up to 50 sampled records. Only what is "
+            "displayed here is masked, the same way samples are. A failure reported here "
+            "is a failure on the real data, not an effect of masking."
+        ),
     }
 
 

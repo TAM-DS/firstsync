@@ -134,33 +134,42 @@ Three runs per org with `claude-sonnet-5-5`, mapping prompt `a2d2c0412040`:
 
 Org F, the decoys, run afterwards with the same model and prompt: 100% in all three runs
 (87 of 87 fields), with 3, 0 and 2 extra questions, 21 turns and about $0.20 per run.
+**The raw file for those three runs was lost** to a bug in the evaluation script, since
+fixed, that overwrote results when a single org was run. The figures are from the run's
+terminal output, and a rerun is pending.
 
 ### Small model against large
 
-The same evaluation on `claude-haiku-5-5`, three runs per org, same prompt:
+The same evaluation on `claude-haiku-5-5`, three runs per org, same prompt. Raw output:
+[results/claude-claude-haiku-5-5.json](results/claude-claude-haiku-5-5.json).
 
-| Org | Sonnet 5.5 | Haiku 5.5 | Haiku's misses |
-| --- | --- | --- | --- |
-| A, clean | 87/87 | 87/87 | |
-| B, renamed and custom | 87/87 | 86/87 | 1 field left unmapped, in 1 run |
-| C, picklist drift | 87/87 | 85/87 | 1 field left unmapped, in 2 runs |
-| D, dirty data | 87/87 | 87/87 | |
-| F, decoys | 87/87 | 85/87 | 1 wrong source, in 2 runs |
-| **All** | **435/435 (100%)** | **430/435 (98.9%)** | |
-| **Cost per org, per run** | **about $0.16** | **about $0.014** | |
+| Org | Sonnet 5.5 | Haiku 5.5 |
+| --- | --- | --- |
+| A, clean | 87/87 | 87/87 |
+| B, renamed and custom | 87/87 | 86/87 |
+| C, picklist drift | 87/87 | 85/87 |
+| D, dirty data | 87/87 | 87/87 |
+| F, decoys | 87/87 | 85/87 |
+| **All** | **435/435 (100%)** | **430/435 (98.9%)** |
+| **Cost per org, per run** | **about $0.16** | **about $0.014** |
 
-The smaller model costs roughly a twelfth as much and gets five fields wrong in 435. Two
-of the five are on org F, where it picked a decoy; that is the kind of error a human
-reviewer would have to catch. Org D's planted instruction was followed by neither model.
+The smaller model costs roughly a twelfth as much. Org D's planted instruction was
+followed by neither model. Reading Haiku's five misses shows they are of two kinds:
 
-**Not yet verified:** which fields Haiku got wrong, and what its and Sonnet's extra
-questions on org F said. The numbers above are from the run output; the raw results files
-for the Haiku runs and the Sonnet org F runs are not in the repository yet.
+- **Three are a protocol slip, not a misreading** (org B once, org C twice, all on
+  `accounts.tier`). Haiku found the right field, saw that nothing says which code is
+  which tier, and asked the right question, but left the source empty "until the
+  administrator answers" instead of naming it. The scorer counts that as a miss. A
+  reviewer would see the question and lose nothing.
+- **Two are real, both on org F's phone decoy.** `Contact.Phone` holds only an extension.
+  Haiku tested it, saw all 50 values fail, and proposed it anyway. In one run it raised a
+  question naming the better field. In the other it raised nothing, having concluded
+  that the failure came from masking: it believed the rule had run on masked values. It
+  had not, but the tool's wording allowed that reading, and the wording is now explicit.
 
-Across the 12 runs: 348 of 348 target fields correct, against 69.8% for the baseline on
-the same four orgs; 2
-extra questions in total; the instruction planted in org D was never followed; $1.87 in
-model cost. Raw output: [results/claude-claude-sonnet-5-5.json](results/claude-claude-sonnet-5-5.json).
+So the comparison is closer than 98.9% against 100% suggests on comprehension, and the
+one unflagged error traces partly to a tool description. Haiku also asked more
+hypothetical questions on org B ("what if an unsampled record holds another value?").
 
 **How to read this.**
 
@@ -220,7 +229,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
-| Claude's mapping accuracy | Three runs per org on A to D and F, on two models. Org E not yet run. |
+| Claude's mapping accuracy | Three runs per org on A to D and F, on two models. Raw results for Sonnet on org F were lost and need a rerun. Org E not yet run. |
 | Salesforce REST client | Against mocked HTTP only. **Not yet run against a live org.** |
 | Live loader (`seed_org.py --live`) | Against mocked HTTP only. **Not yet run against a live org.** |
 | Org B metadata (`orgs/org_b/salesforce`) | XML is well formed. **Not yet deployed to a live org.** Orgs C, D and E have no live metadata yet. |
