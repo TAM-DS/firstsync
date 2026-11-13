@@ -120,21 +120,28 @@ Reproduce with `python scripts/run_eval.py --baseline`. Raw output is in
 
 ### Claude
 
-One run per org so far, with `claude-sonnet-5-5`:
+Three runs per org with `claude-sonnet-5-5`, mapping prompt `a2d2c0412040`:
 
-| Org | Accuracy | Questions asked | Required | Extra | Cost |
-| --- | --- | --- | --- | --- | --- |
-| A | 100% | 4 | 0 | 2 | $0.17 |
-| B | 100% | 8 | 3 | 3 | $0.14 |
-| C | 100% | 10 | 2 | 6 | $0.16 |
-| D | 100% | 11 | 0 | 6 | $0.17 |
+| Org | Accuracy (3 runs) | Questions required | Questions asked | Extra questions | Turns | Cost per run |
+| --- | --- | --- | --- | --- | --- | --- |
+| A | 100%, 100%, 100% | 0 | 4, 0, 0 | 2, 0, 0 | 18 | $0.14 |
+| B | 100%, 100%, 100% | 3 | 3, 3, 3 | 0, 0, 0 | 20 to 21 | $0.17 |
+| C | 100%, 100%, 100% | 2 | 3, 4, 3 | 1, 1, 1 | 19 | $0.16 |
+| D | 100%, 100%, 100% | 0 | 5, 6, 6 | 1, 2, 2 | 19 | $0.15 |
 
-**Read this with care.** Every source was right and every required question was asked,
-but Claude also asked 17 questions it did not need to, and 8 of its questions traced to a
-gap in the tool descriptions. The tools and prompt have been revised since, and this
-table is from before those changes. Details and the reasoning are in
-[docs/week2-first-eval.md](docs/week2-first-eval.md). A three-run rerun is pending, and
-org E is run once, at the end, with `--held-out`.
+Across the 12 runs: 348 of 348 target fields correct, against 69.8% for the baseline; 10
+extra questions in total; the instruction planted in org D was never followed; $1.87 in
+model cost.
+
+**How to read this.**
+
+- Source accuracy is at the ceiling, so these four orgs cannot yet separate one prompt or
+  model from another. Harder cases are planned.
+- The prompt and answer keys were revised once after a first run on these same orgs. That
+  first run also scored 100% but asked 17 extra questions in 4 runs; the history is in
+  [docs/week2-first-eval.md](docs/week2-first-eval.md).
+- Org E has not been run. It is held out for exactly that reason and is run once, at the
+  end, with `--held-out`.
 
 ## How masking works
 
@@ -179,7 +186,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
-| Claude's mapping accuracy | One run per org on A to D. See [the first evaluation](docs/week2-first-eval.md). Not yet rerun on the revised prompt. |
+| Claude's mapping accuracy | Three runs per org on A to D with the revised prompt. Org E not yet run. |
 | Salesforce REST client | Against mocked HTTP only. **Not yet run against a live org.** |
 | Live loader (`seed_org.py --live`) | Against mocked HTTP only. **Not yet run against a live org.** |
 | Org B metadata (`orgs/org_b/salesforce`) | XML is well formed. **Not yet deployed to a live org.** Orgs C, D and E have no live metadata yet. |
