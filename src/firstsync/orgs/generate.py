@@ -13,6 +13,8 @@ Org D: dirty data. Mixed date formats, duplicate contacts, missing required valu
        phone numbers in four formats, and a record that tries to instruct the model.
 Org E: locked down. The connected user cannot read two fields and one object. Held out:
        never used while tuning prompts.
+Org F: decoys. For five target fields there are two plausible sources, and the field
+       whose name fits best is the wrong one. Only the values settle it.
 """
 
 from __future__ import annotations
@@ -630,11 +632,120 @@ def build_org_e(seed: int = 505) -> dict[str, Any]:
     }
 
 
+# --- Org F: decoys ---------------------------------------------------------------------
+
+F_PLANS = ["Enterprise", "Standard", "Free"]
+F_SUPPORT_LEVELS = ["24x7", "Business Hours", "None"]
+F_FUNCTIONS = ["Engineering", "Finance", "Legal", "Operations", "Procurement"]
+F_FORECAST = ["Commit", "Best Case", "Pipeline", "Omitted"]
+
+
+def build_org_f(seed: int = 606) -> dict[str, Any]:
+    rng = random.Random(seed)
+    accounts = _accounts(rng)
+    contacts = _contacts(rng, accounts)
+    deals = _deals(rng, accounts)
+    account_records = [
+        {
+            "Id": a["Id"],
+            "Name": a["Name"],
+            "Industry": None,  # the standard field exists and was never filled in
+            "Vertical__c": a["Industry"],
+            "Tier__c": rng.choice(F_SUPPORT_LEVELS),  # a support level, despite the name
+            "Plan__c": F_PLANS[TIERS.index(a["_tier"])],
+            "Website": a["Website"],
+            "Owner_Email__c": f"{rng.choice(FIRST)}.{rng.choice(LAST)}@seller.example".lower(),
+            "Billing_Email__c": f"billing@{_slug(a['Name'])}.example",
+        }
+        for a in accounts
+    ]
+    contact_records = [
+        {
+            "Id": c["Id"],
+            "AccountId": c["AccountId"],
+            "FirstName": c["FirstName"],
+            "LastName": c["LastName"],
+            "Email": c["Email"],
+            "Phone": f"x{rng.randint(1000, 9999)}",  # an extension, not a number
+            "MobilePhone": c["Phone"],
+            "Role__c": rng.choice(F_FUNCTIONS),  # a job function, despite the name
+            "Buying_Role__c": c["_role"],
+        }
+        for c in contacts
+    ]
+    opportunities = [
+        {
+            "Id": _id("006", d["_n"]),
+            "AccountId": d["_account"]["Id"],
+            "Name": d["Name"],
+            "Amount": d["Amount"],
+            "StageName": STANDARD_STAGES[d["_stage_index"]],
+            "Stage__c": rng.choice(F_FORECAST),  # a forecast category, despite the name
+            "CloseDate": d["CloseDate"],
+        }
+        for d in deals
+    ]
+    related = [a["Id"] for a in accounts] + [o["Id"] for o in opportunities]
+    return {
+        "org": "org_f",
+        "theme": "Decoys",
+        "objects": {
+            "Account": _obj(
+                "Account",
+                "Account",
+                [
+                    _field("Id", "Account ID", "id", nillable=False),
+                    _field("Name", "Account Name", "string", nillable=False, length=255),
+                    _field("Industry", "Industry", "picklist", picklist=INDUSTRY),
+                    _field("Vertical__c", "Vertical", "string", custom=True, length=80),
+                    _field("Tier__c", "Tier", "picklist", custom=True, picklist=F_SUPPORT_LEVELS),
+                    _field("Plan__c", "Plan", "picklist", custom=True, picklist=F_PLANS),
+                    _field("Website", "Website", "url", length=255),
+                    _field("Owner_Email__c", "Owner Email", "email", custom=True, length=80),
+                    _field("Billing_Email__c", "Billing Email", "email", custom=True, length=80),
+                ],
+                account_records,
+            ),
+            "Contact": _obj(
+                "Contact",
+                "Contact",
+                [
+                    _field("Id", "Contact ID", "id", nillable=False),
+                    _field("AccountId", "Account ID", "reference", reference_to=["Account"]),
+                    _field("FirstName", "First Name", "string", length=40),
+                    _field("LastName", "Last Name", "string", nillable=False, length=80),
+                    _field("Email", "Email", "email", length=80),
+                    _field("Phone", "Business Phone", "phone", length=40),
+                    _field("MobilePhone", "Mobile Phone", "phone", length=40),
+                    _field("Role__c", "Role", "string", custom=True, length=80),
+                    _field(
+                        "Buying_Role__c", "Buying Role", "picklist", custom=True,
+                        picklist=BUYING_ROLES,
+                    ),  # fmt: skip
+                ],
+                contact_records,
+            ),
+            "Opportunity": _obj(
+                "Opportunity",
+                "Opportunity",
+                [
+                    *_OPPORTUNITY_FIELDS[:5],
+                    _field("Stage__c", "Stage", "string", custom=True, length=40),
+                    _OPPORTUNITY_FIELDS[5],
+                ],
+                opportunities,
+            ),
+            "Task": _obj("Task", "Task", TASK_FIELDS, _tasks(rng, related)),
+        },
+    }
+
+
 BUILDERS = {
     "org_a": build_org_a,
     "org_b": build_org_b,
     "org_c": build_org_c,
     "org_d": build_org_d,
     "org_e": build_org_e,
+    "org_f": build_org_f,
 }
 HELD_OUT = ("org_e",)

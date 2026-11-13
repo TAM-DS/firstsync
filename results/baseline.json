@@ -1,6 +1,6 @@
 {
   "label": "baseline",
-  "date": "2026-11-13T03:58:07+00:00",
+  "date": "2026-11-13T04:02:24+00:00",
   "model": null,
   "prompt_sha256_12": null,
   "runs_per_org": 1,
@@ -1873,7 +1873,549 @@
           }
         }
       ]
+    },
+    "org_f": {
+      "mean_accuracy": 0.6552,
+      "runs": [
+        {
+          "org": "org_f",
+          "total": 29,
+          "accuracy": 0.6552,
+          "counts": {
+            "correct": 19,
+            "should_have_asked": 0,
+            "wrong_source": 5,
+            "missed": 5,
+            "invented": 0
+          },
+          "questions_asked": 0,
+          "questions_required": 0,
+          "extra_questions": [],
+          "fields": [
+            {
+              "target": "accounts.external_id",
+              "outcome": "correct",
+              "expected": "Account.Id",
+              "proposed": "Account.Id",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.name",
+              "outcome": "correct",
+              "expected": "Account.Name",
+              "proposed": "Account.Name",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.industry",
+              "outcome": "wrong_source",
+              "expected": "Account.Vertical__c",
+              "proposed": "Account.Industry",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.tier",
+              "outcome": "wrong_source",
+              "expected": "Account.Plan__c",
+              "proposed": "Account.Tier__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.website",
+              "outcome": "correct",
+              "expected": "Account.Website",
+              "proposed": "Account.Website",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.customer_since",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "accounts.owner_email",
+              "outcome": "correct",
+              "expected": "Account.Owner_Email__c",
+              "proposed": "Account.Owner_Email__c",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.external_id",
+              "outcome": "correct",
+              "expected": "Contact.Id",
+              "proposed": "Contact.Id",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.account_external_id",
+              "outcome": "correct",
+              "expected": "Contact.AccountId",
+              "proposed": "Contact.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.first_name",
+              "outcome": "correct",
+              "expected": "Contact.FirstName",
+              "proposed": "Contact.FirstName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.last_name",
+              "outcome": "correct",
+              "expected": "Contact.LastName",
+              "proposed": "Contact.LastName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.email",
+              "outcome": "correct",
+              "expected": "Contact.Email",
+              "proposed": "Contact.Email",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.phone",
+              "outcome": "wrong_source",
+              "expected": "Contact.MobilePhone",
+              "proposed": "Contact.Phone",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.role",
+              "outcome": "wrong_source",
+              "expected": "Contact.Buying_Role__c",
+              "proposed": "Contact.Role__c",
+              "must_ask": false
+            },
+            {
+              "target": "deals.external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.Id",
+              "proposed": "Opportunity.Id",
+              "must_ask": false
+            },
+            {
+              "target": "deals.account_external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.AccountId",
+              "proposed": "Opportunity.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "deals.name",
+              "outcome": "correct",
+              "expected": "Opportunity.Name",
+              "proposed": "Opportunity.Name",
+              "must_ask": false
+            },
+            {
+              "target": "deals.amount",
+              "outcome": "correct",
+              "expected": "Opportunity.Amount",
+              "proposed": "Opportunity.Amount",
+              "must_ask": false
+            },
+            {
+              "target": "deals.currency",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "deals.stage",
+              "outcome": "wrong_source",
+              "expected": "Opportunity.StageName",
+              "proposed": "Opportunity.Stage__c",
+              "must_ask": false
+            },
+            {
+              "target": "deals.close_date",
+              "outcome": "correct",
+              "expected": "Opportunity.CloseDate",
+              "proposed": "Opportunity.CloseDate",
+              "must_ask": false
+            },
+            {
+              "target": "deals.owner_email",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.external_id",
+              "outcome": "correct",
+              "expected": "Task.Id",
+              "proposed": "Task.Id",
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_type",
+              "outcome": "missed",
+              "expected": "Task.WhatId",
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_external_id",
+              "outcome": "missed",
+              "expected": "Task.WhatId",
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.kind",
+              "outcome": "missed",
+              "expected": "Task.Type",
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.subject",
+              "outcome": "correct",
+              "expected": "Task.Subject",
+              "proposed": "Task.Subject",
+              "must_ask": false
+            },
+            {
+              "target": "activities.occurred_at",
+              "outcome": "missed",
+              "expected": "Task.ActivityDate",
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.notes",
+              "outcome": "missed",
+              "expected": "Task.Description",
+              "proposed": null,
+              "must_ask": false
+            }
+          ],
+          "proposals": {
+            "accounts.external_id": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Account.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Id",
+              "target": "accounts.external_id"
+            },
+            "accounts.industry": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Account.Industry"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Industry",
+              "target": "accounts.industry"
+            },
+            "accounts.name": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Account.Name"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Name",
+              "target": "accounts.name"
+            },
+            "accounts.owner_email": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Account.Owner_Email__c"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Owner_Email__c",
+              "target": "accounts.owner_email"
+            },
+            "accounts.tier": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Account.Tier__c"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Tier__c",
+              "target": "accounts.tier"
+            },
+            "accounts.website": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Account.Website"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Website",
+              "target": "accounts.website"
+            },
+            "activities.external_id": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Task.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.Id",
+              "target": "activities.external_id"
+            },
+            "activities.subject": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Task.Subject"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.Subject",
+              "target": "activities.subject"
+            },
+            "contacts.account_external_id": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Contact.AccountId"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.AccountId",
+              "target": "contacts.account_external_id"
+            },
+            "contacts.email": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Contact.Email"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.Email",
+              "target": "contacts.email"
+            },
+            "contacts.external_id": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Contact.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.Id",
+              "target": "contacts.external_id"
+            },
+            "contacts.first_name": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Contact.FirstName"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.FirstName",
+              "target": "contacts.first_name"
+            },
+            "contacts.last_name": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Contact.LastName"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.LastName",
+              "target": "contacts.last_name"
+            },
+            "contacts.phone": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Contact.Phone"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.Phone",
+              "target": "contacts.phone"
+            },
+            "contacts.role": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Contact.Role__c"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.Role__c",
+              "target": "contacts.role"
+            },
+            "deals.account_external_id": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity.AccountId"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.AccountId",
+              "target": "deals.account_external_id"
+            },
+            "deals.amount": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity.Amount"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.Amount",
+              "target": "deals.amount"
+            },
+            "deals.close_date": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity.CloseDate"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.CloseDate",
+              "target": "deals.close_date"
+            },
+            "deals.external_id": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.Id",
+              "target": "deals.external_id"
+            },
+            "deals.name": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity.Name"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.Name",
+              "target": "deals.name"
+            },
+            "deals.stage": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity.Stage__c"
+              ],
+              "question_for_admin": null,
+              "reason": "The source field name matches the target field name.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.Stage__c",
+              "target": "deals.stage"
+            }
+          }
+        }
+      ]
     }
   },
-  "mean_accuracy": 0.6983
+  "mean_accuracy": 0.6897
 }
