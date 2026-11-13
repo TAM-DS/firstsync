@@ -132,7 +132,30 @@ Three runs per org with `claude-sonnet-5-5`, mapping prompt `a2d2c0412040`:
 | C | 100%, 100%, 100% | 2 | 3, 4, 3 | 0, 0, 0 | 19 | $0.16 |
 | D | 100%, 100%, 100% | 0 | 5, 6, 6 | 0, 0, 0 | 19 | $0.15 |
 
-Org F was added after these runs and **has not been run with Claude yet**.
+Org F, the decoys, run afterwards with the same model and prompt: 100% in all three runs
+(87 of 87 fields), with 3, 0 and 2 extra questions, 21 turns and about $0.20 per run.
+
+### Small model against large
+
+The same evaluation on `claude-haiku-5-5`, three runs per org, same prompt:
+
+| Org | Sonnet 5.5 | Haiku 5.5 | Haiku's misses |
+| --- | --- | --- | --- |
+| A, clean | 87/87 | 87/87 | |
+| B, renamed and custom | 87/87 | 86/87 | 1 field left unmapped, in 1 run |
+| C, picklist drift | 87/87 | 85/87 | 1 field left unmapped, in 2 runs |
+| D, dirty data | 87/87 | 87/87 | |
+| F, decoys | 87/87 | 85/87 | 1 wrong source, in 2 runs |
+| **All** | **435/435 (100%)** | **430/435 (98.9%)** | |
+| **Cost per org, per run** | **about $0.17** | **about $0.014** | |
+
+The smaller model costs roughly a twelfth as much and gets five fields wrong in 435. Two
+of the five are on org F, where it picked a decoy; that is the kind of error a human
+reviewer would have to catch. Org D's planted instruction was followed by neither model.
+
+**Not yet verified:** which fields Haiku got wrong, and what its and Sonnet's extra
+questions on org F said. The numbers above are from the run output; the raw results files
+for the Haiku runs and the Sonnet org F runs are not in the repository yet.
 
 Across the 12 runs: 348 of 348 target fields correct, against 69.8% for the baseline on
 the same four orgs; 2
@@ -141,8 +164,8 @@ model cost. Raw output: [results/claude-claude-sonnet-5-5.json](results/claude-c
 
 **How to read this.**
 
-- Source accuracy is at the ceiling on orgs A to D, so they cannot separate one prompt or
-  model from another. Org F was built to be harder; its result will show whether it is.
+- Source accuracy is at the ceiling for the larger model on every org run so far, org F
+  included. The evaluation does separate the two models, which is what it is now for.
 - "Accuracy" scores the source field and whether a required question was asked. It does
   not yet score the transformation rule. Checking rules by hand found one that would
   fail: in one org B run, a text date was proposed with no date-parsing step. Week 3's
@@ -197,7 +220,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
-| Claude's mapping accuracy | Three runs per org on A to D with the revised prompt. Orgs E and F not yet run. |
+| Claude's mapping accuracy | Three runs per org on A to D and F, on two models. Org E not yet run. |
 | Salesforce REST client | Against mocked HTTP only. **Not yet run against a live org.** |
 | Live loader (`seed_org.py --live`) | Against mocked HTTP only. **Not yet run against a live org.** |
 | Org B metadata (`orgs/org_b/salesforce`) | XML is well formed. **Not yet deployed to a live org.** Orgs C, D and E have no live metadata yet. |

@@ -1,12 +1,11 @@
 {
   "label": "baseline",
-  "date": "2026-11-13T04:02:24+00:00",
   "model": null,
-  "prompt_sha256_12": null,
-  "runs_per_org": 1,
   "orgs": {
     "org_a": {
       "mean_accuracy": 0.7931,
+      "date": "2026-11-13T12:46:11+00:00",
+      "prompt_sha256_12": null,
       "runs": [
         {
           "org": "org_a",
@@ -489,6 +488,8 @@
     },
     "org_b": {
       "mean_accuracy": 0.4483,
+      "date": "2026-11-13T12:46:11+00:00",
+      "prompt_sha256_12": null,
       "runs": [
         {
           "org": "org_b",
@@ -881,6 +882,8 @@
     },
     "org_c": {
       "mean_accuracy": 0.7586,
+      "date": "2026-11-13T12:46:11+00:00",
+      "prompt_sha256_12": null,
       "runs": [
         {
           "org": "org_c",
@@ -1378,6 +1381,8 @@
     },
     "org_d": {
       "mean_accuracy": 0.7931,
+      "date": "2026-11-13T12:46:11+00:00",
+      "prompt_sha256_12": null,
       "runs": [
         {
           "org": "org_d",
@@ -1876,6 +1881,8 @@
     },
     "org_f": {
       "mean_accuracy": 0.6552,
+      "date": "2026-11-13T12:46:11+00:00",
+      "prompt_sha256_12": null,
       "runs": [
         {
           "org": "org_f",
@@ -2417,5 +2424,6 @@
       ]
     }
   },
+  "date": "2026-11-13T12:46:11+00:00",
   "mean_accuracy": 0.6897
 }
