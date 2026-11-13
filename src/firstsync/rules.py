@@ -29,6 +29,29 @@ from typing import Any
 
 from firstsync.salesforce.base import NAME
 
+RULE_HELP = "\n".join(
+    [
+        "A rule is a list of up to 8 steps, each an object with an 'op':",
+        "- copy: leave the value as it is.",
+        "- trim: strip surrounding whitespace.",
+        '- case: {"op":"case","to":"upper"|"lower"|"title"}.',
+        '- cast: {"op":"cast","to":"string"|"integer"|"number"|"boolean"|"date"|"timestamp"}.',
+        "  Casting a date to timestamp gives midnight UTC, e.g. 2026-01-05T00:00:00Z.",
+        '- parse_date: {"op":"parse_date","formats":["%m/%d/%Y","%d %b %Y"],',
+        '  "output":"date"|"timestamp"}. Tries each strptime format in order.',
+        '- map_values: {"op":"map_values","table":{"From":"to"},',
+        '  "unmapped":"ask_admin"|"error"|"null"|"keep","case_insensitive":true|false}.',
+        '- lookup: {"op":"lookup","prefix_length":3,"table":{"001":"account"},"unmapped":...}.',
+        "  Maps the first N characters of the value, for example a record Id prefix to a type.",
+        '- split: {"op":"split","separator":",","index":0}.',
+        '- concat: {"op":"concat","fields":["FirstName","LastName"],"separator":" "}.',
+        "  Joins fields of the same source record.",
+        '- default: {"op":"default","value":"USD"}. Used when the value is empty.',
+        '- normalize_phone: {"op":"normalize_phone","default_country_code":"1"}. Gives E.164.',
+        "Empty values pass through every step except default and concat as null.",
+    ]
+)
+
 MAX_STEPS = 8
 UNMAPPED_MODES = {"ask_admin", "error", "null", "keep"}
 CAST_TYPES = {"string", "integer", "number", "boolean", "date", "timestamp"}

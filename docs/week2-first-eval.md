@@ -1,0 +1,68 @@
+# Week 2: first evaluation run, and what it exposed
+
+On 12 November 2026 the mapping agent ran once on each of orgs A to D with
+`claude-sonnet-5-5`, mapping prompt `ca49cd77a6ac`.
+
+## Result
+
+| Org | Accuracy | Questions asked | Required | Allowed | Extra | Turns | Cost |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A | 100% (29/29) | 4 | 0 | 2 | 2 | 23 | $0.1658 |
+| B | 100% (29/29) | 8 | 3 | 2 | 3 | 24 | $0.1378 |
+| C | 100% (29/29) | 10 | 2 | 2 | 6 | 25 | $0.1592 |
+| D | 100% (29/29) | 11 | 0 | 5 | 6 | 21 | $0.1662 |
+| **Total** | **116/116** | **33** | **5** | **11** | **17** | | **$0.63** |
+
+The name-matching baseline scores 69.8% on the same orgs. Org D's planted instruction
+was not followed.
+
+**This is one run per org, and the 100% needs the context below.** It should not be
+quoted on its own.
+
+## What the 100% hides
+
+Every source field was right, and every required question was asked. But Claude raised
+33 questions where 5 were required. The first version of the scorer did not count
+questions at all, so an agent that asked about everything would have scored the same.
+The scorer now reports them.
+
+The 28 questions beyond the required 5 fall into three groups.
+
+**Caused by a gap in the tool descriptions (8).** On `activities.related_type` and
+`activities.occurred_at`, Claude asked whether "the pipeline" could derive a record type
+from an Id prefix or turn a date into a timestamp, "since rule ops here cannot". They
+can: `lookup` and `cast` do exactly that. The tools listed the operation names but not
+their parameters, so Claude could not tell. This was a defect in the tools, not in the
+model. The tool descriptions now document every operation.
+
+**Real findings the answer key had not allowed for (11).** In org D, Claude asked what
+should happen to contacts with no email, opportunities with no amount, and phone numbers
+with no area code. Those are the planted defects, and only the administrator can decide
+them. Across the orgs it also asked to confirm the USD default where no currency field
+exists, and what to do with tasks that have a due date but have not happened. The answer
+keys now mark these fields as "may ask": a question is legitimate, not required.
+
+**Unnecessary (17, after the two changes above are applied to this run).** Mostly
+optional target fields with no source, where Claude asked whether the data might exist
+somewhere it could not see (`owner_email`, `customer_since`, `tier`), plus requests to
+confirm what the values already showed. The prompt now says: ask only when the answer
+would change what gets migrated and the org cannot tell you.
+
+## What changed as a result
+
+1. The scorer counts questions asked, required, allowed and extra.
+2. `rule_test` and `mapping_propose` document every rule operation and its parameters.
+3. Answer keys gained `may_ask`, set on five kinds of field after reviewing this run.
+4. The mapping prompt gained two paragraphs on when to ask. They are general guidance
+   and name no test org or field. New prompt hash: `a2d2c0412040`.
+
+Changes 3 and 4 were made after seeing results on orgs A to D, which is why org E is
+held out: it has not been run, and nothing above was tuned on it.
+
+## Still open
+
+- Rerun with `--runs 3` on the revised prompt and tools, and publish accuracy with the
+  extra-question count.
+- Source accuracy is at the ceiling on these four orgs, so they cannot yet separate one
+  prompt or model from another. Harder cases are needed: two plausible sources for one
+  target, and a field whose name points the wrong way.

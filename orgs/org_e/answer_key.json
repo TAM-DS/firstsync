@@ -13,24 +13,28 @@
       "target": "accounts.external_id",
       "source": "Account.Id",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.name",
       "source": "Account.Name",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.industry",
       "source": "Account.Segment__c",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.tier",
       "source": "Account.Plan_Level__c",
       "must_ask": true,
+      "may_ask": false,
       "rule": "map values",
       "note": "The order is suggestive, but which plan is which tier must be confirmed."
     },
@@ -38,48 +42,56 @@
       "target": "accounts.website",
       "source": "Account.Website",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.customer_since",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.owner_email",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.external_id",
       "source": "Contact.Id",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.account_external_id",
       "source": "Contact.AccountId",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.first_name",
       "source": "Contact.FirstName",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.last_name",
       "source": "Contact.LastName",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.email",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -87,12 +99,14 @@
       "target": "contacts.phone",
       "source": "Contact.Phone",
       "must_ask": false,
+      "may_ask": false,
       "rule": "normalize to E.164"
     },
     {
       "target": "contacts.role",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy",
       "note": "Contact.Title is a job title, not a buying role."
     },
@@ -100,24 +114,28 @@
       "target": "deals.external_id",
       "source": "Opportunity.Id",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.account_external_id",
       "source": "Opportunity.AccountId",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.name",
       "source": "Opportunity.Name",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.amount",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -125,30 +143,36 @@
       "target": "deals.currency",
       "source": null,
       "must_ask": false,
-      "rule": "default USD"
+      "may_ask": true,
+      "rule": "default USD",
+      "note": "No currency field; confirming the USD default is reasonable."
     },
     {
       "target": "deals.stage",
       "source": "Opportunity.StageName",
       "must_ask": false,
+      "may_ask": false,
       "rule": "map values"
     },
     {
       "target": "deals.close_date",
       "source": "Opportunity.CloseDate",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.owner_email",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "activities.external_id",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -156,6 +180,7 @@
       "target": "activities.related_type",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -163,6 +188,7 @@
       "target": "activities.related_external_id",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -170,6 +196,7 @@
       "target": "activities.kind",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -177,6 +204,7 @@
       "target": "activities.subject",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -184,6 +212,7 @@
       "target": "activities.occurred_at",
       "source": null,
       "must_ask": true,
+      "may_ask": false,
       "rule": "copy",
       "note": "The connected user cannot read this; an administrator must grant access."
     },
@@ -191,6 +220,7 @@
       "target": "activities.notes",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     }
   ]

@@ -13,10 +13,10 @@ Accuracy is correct / total. Only `correct` counts.
 
 Asking is not free. A model that put a question on every field would never be marked
 `should_have_asked`, so the score also reports `extra_questions`: fields where a question
-was raised although the key says the evidence settles it. Some of those are reasonable
-(confirming a default currency, say), so they do not reduce accuracy, but the count is
-published next to it and a high count means the administrator is being asked to do the
-agent's job.
+was raised although the key neither requires nor allows one. The key allows a question
+where the data has a real problem only the administrator can decide, or a default deserves
+confirming. Extra questions do not reduce accuracy, but the count is published next to
+it, and a high count means the administrator is being asked to do the agent's job.
 """
 
 from __future__ import annotations
@@ -60,8 +60,8 @@ def score(key: dict[str, Any], proposals: dict[str, dict[str, Any]]) -> dict[str
     total = len(key["mappings"])
     required_questions = sum(1 for m in key["mappings"] if m["must_ask"])
     asked = [t for t, m in proposals.items() if m.get("question_for_admin")]
-    must_ask = {m["target"] for m in key["mappings"] if m["must_ask"]}
-    extra = sorted(t for t in asked if t not in must_ask)
+    allowed = {m["target"] for m in key["mappings"] if m["must_ask"] or m.get("may_ask")}
+    extra = sorted(t for t in asked if t not in allowed)
     result: dict[str, Any] = {
         "org": key["org"],
         "total": total,

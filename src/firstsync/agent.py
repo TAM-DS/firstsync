@@ -57,8 +57,15 @@ field means.
 - Ask the administrator, with question_for_admin, whenever the org cannot settle it: \
 what a code or label stands for when nothing in the org says, what a reused field \
 actually holds, where a value with no equivalent in the target should go, or a required \
-field you are not allowed to read. Asking is correct there. Guessing is wrong. Do not \
-ask about things the evidence already settles.
+field you are not allowed to read. Asking is correct there. Guessing is wrong.
+- Every question costs the administrator time, so ask only when the answer would change \
+what gets migrated and the org cannot tell you. Do not ask them to confirm what the \
+values already show. Do not ask about an optional target field that simply has no \
+source: leave it unmapped and say so in the reason. Do not ask whether a transformation \
+is possible: the rule format is described in the tool, so test the rule instead.
+- If sampled data will break the target's rules and no rule can repair it, such as a \
+required value that is missing on some records, raise that in a question on that field. \
+The administrator has to decide what happens to those records.
 - If a required target field cannot be read because of permissions, propose a null \
 source with a question that names the permission needed.
 

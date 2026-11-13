@@ -19,6 +19,7 @@ from mcp.server.mcpserver.exceptions import ToolError
 
 from firstsync import audit, tools
 from firstsync.connections import get_client
+from firstsync.rules import RULE_HELP
 from firstsync.salesforce import SalesforceError
 
 server = MCPServer(
@@ -133,15 +134,30 @@ def target_get_schema() -> dict[str, Any]:
     return _logged("target_get_schema", "discover", None, {}, tools.target_get_schema)
 
 
-@server.tool()
+RULE_TEST_DOC = (
+    "Run a transformation rule on up to 50 sampled values of one source field "
+    "('Object.Field') and report how many succeeded, why the rest failed, and which values "
+    "had no entry in a map_values or lookup table. Give 'target' ('table.field') to also "
+    "check that the results fit that target field. Nothing is stored.\n\n" + RULE_HELP
+)
+MAPPING_PROPOSE_DOC = (
+    "Propose field mappings for human approval. Each mapping is an object with: "
+    "target ('table.field'); source ('Object.Field', or null when nothing in the org "
+    "belongs there); confidence (high, medium or low); reason (what the evidence shows); "
+    "evidence (list of strings such as 'describe:Account.Some_Field__c' or "
+    "'sample:Account#1-50'); rule (list of steps, default copy); question_for_admin (a "
+    "question, or null). A question is required for low confidence, for a rule with "
+    "unmapped='ask_admin', and for a required target with no source and no default. "
+    "Valid mappings are stored; invalid ones are returned with reasons. Proposing again "
+    "for the same target replaces the earlier proposal. Nothing is written to customer "
+    "data.\n\n" + RULE_HELP
+)
+
+
+@server.tool(description=RULE_TEST_DOC)
 def rule_test(
     connection: str, source: str, rule: list[dict[str, Any]], target: str | None = None
 ) -> dict[str, Any]:
-    """Run a transformation rule on up to 50 sampled values of one source field
-    ('Object.Field') and report how many succeeded, why the rest failed, and which values
-    had no entry in a map_values table. Give 'target' ('table.field') to also check that
-    the results fit that target field. Nothing is stored. Allowed operations: copy, trim,
-    case, cast, parse_date, map_values, lookup, split, concat, default, normalize_phone."""
     return _logged(
         "rule_test",
         "map",
@@ -151,17 +167,8 @@ def rule_test(
     )
 
 
-@server.tool()
+@server.tool(description=MAPPING_PROPOSE_DOC)
 def mapping_propose(connection: str, mappings: list[dict[str, Any]]) -> dict[str, Any]:
-    """Propose field mappings for human approval. Each mapping is an object with:
-    target ('table.field'); source ('Object.Field', or null when nothing in the org
-    belongs there); confidence (high, medium or low); reason (what the evidence shows);
-    evidence (list of strings such as 'describe:Account.Field_7__c' or
-    'sample:Account#1-50'); rule (list of steps, default copy); question_for_admin (a
-    question, or null). A question is required for low confidence, for a rule with
-    unmapped='ask_admin', and for a required target with no source and no default.
-    Valid mappings are stored; invalid ones are returned with reasons. Proposing again
-    for the same target replaces the earlier proposal. Nothing is written to customer data."""
     return _logged(
         "mapping_propose",
         "map",

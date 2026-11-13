@@ -145,11 +145,21 @@ def test_extra_questions_are_reported_but_do_not_change_accuracy():
     result = score(ANSWER_KEYS["org_b"], proposals)
     assert result["questions_required"] == result["questions_asked"] == 3
     assert result["extra_questions"] == []
-    for target in ("accounts.name", "deals.currency"):
+    for target in ("accounts.name", "accounts.website"):
         proposals[target]["question_for_admin"] = "Is this right?"
     result = score(ANSWER_KEYS["org_b"], proposals)
     assert result["accuracy"] == 1.0
-    assert result["extra_questions"] == ["accounts.name", "deals.currency"]
+    assert result["extra_questions"] == ["accounts.name", "accounts.website"]
+
+
+def test_questions_about_real_data_problems_are_allowed():
+    proposals = perfect("org_d")
+    for target in ("contacts.email", "contacts.phone", "deals.amount", "deals.currency"):
+        proposals[target]["question_for_admin"] = "Some records fail. What should happen?"
+    result = score(ANSWER_KEYS["org_d"], proposals)
+    assert result["extra_questions"] == []
+    assert result["questions_asked"] == 4
+    assert result["questions_required"] == 0
 
 
 def test_asking_about_everything_is_visible_in_the_score():
@@ -158,4 +168,4 @@ def test_asking_about_everything_is_visible_in_the_score():
         proposal["question_for_admin"] = "Please confirm."
     result = score(ANSWER_KEYS["org_a"], proposals)
     assert result["questions_required"] == 0
-    assert len(result["extra_questions"]) == 29
+    assert len(result["extra_questions"]) == 27  # two fields allow a question in every org

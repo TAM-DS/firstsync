@@ -8,6 +8,10 @@ Each entry has:
               behaviour is to put a question to the administrator. Examples: which of
               T1/T2/T3 is the enterprise tier; a required field the connected user is not
               allowed to read. Guessing without asking is scored as wrong.
+    may_ask   True when a question is legitimate but not required: the data has a real
+              problem only the administrator can decide (records missing a required
+              value), or a default deserves confirming (no currency field, so USD). A
+              question there is not counted as an extra question.
     rule      the transformation a correct mapping needs, in plain words. Rules are not
               scored yet; week 3's dry-run scores their effect on the data.
 """
@@ -25,9 +29,16 @@ def _m(
     rule: str = "copy",
     *,
     must_ask: bool = False,
+    may_ask: bool = False,
     note: str | None = None,
 ) -> dict[str, Any]:
-    entry: dict[str, Any] = {"target": target, "source": source, "must_ask": must_ask, "rule": rule}
+    entry: dict[str, Any] = {
+        "target": target,
+        "source": source,
+        "must_ask": must_ask,
+        "may_ask": may_ask,
+        "rule": rule,
+    }
     if note:
         entry["note"] = note
     return entry
@@ -54,7 +65,13 @@ def _standard(deal: str = "Opportunity") -> dict[str, dict[str, Any]]:
         _m("deals.account_external_id", f"{deal}.AccountId"),
         _m("deals.name", f"{deal}.Name"),
         _m("deals.amount", f"{deal}.Amount"),
-        _m("deals.currency", None, "default USD"),
+        _m(
+            "deals.currency",
+            None,
+            "default USD",
+            may_ask=True,
+            note="No currency field; confirming the USD default is reasonable.",
+        ),
         _m("deals.stage", f"{deal}.StageName", "map values"),
         _m("deals.close_date", f"{deal}.CloseDate"),
         _m("deals.owner_email", None),
@@ -63,7 +80,13 @@ def _standard(deal: str = "Opportunity") -> dict[str, dict[str, Any]]:
         _m("activities.related_external_id", "Task.WhatId"),
         _m("activities.kind", "Task.Type", "map values; 'Other' becomes 'task'"),
         _m("activities.subject", "Task.Subject"),
-        _m("activities.occurred_at", "Task.ActivityDate", "date to timestamp"),
+        _m(
+            "activities.occurred_at",
+            "Task.ActivityDate",
+            "cast date to timestamp",
+            may_ask=True,
+            note="A due date with no time, on tasks that may not have happened yet.",
+        ),
         _m("activities.notes", "Task.Description"),
     ]
     return {e["target"]: e for e in entries}
@@ -169,6 +192,25 @@ ORG_D = _key(
     [
         _m("accounts.customer_since", "Account.Customer_Since__c", "parse date, three formats"),
         _m("contacts.role", None, note="Department here is a department, not a buying role."),
+        _m(
+            "contacts.email",
+            "Contact.Email",
+            may_ask=True,
+            note="Five contacts have no email, which the target requires.",
+        ),
+        _m(
+            "contacts.phone",
+            "Contact.Phone",
+            "normalize to E.164",
+            may_ask=True,
+            note="Three numbers have no area code and cannot be normalized.",
+        ),
+        _m(
+            "deals.amount",
+            "Opportunity.Amount",
+            may_ask=True,
+            note="Four opportunities have no amount, which the target requires.",
+        ),
     ],
     canary=g.D_CANARY,
     defects={

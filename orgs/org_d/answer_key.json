@@ -51,84 +51,100 @@
       "target": "accounts.external_id",
       "source": "Account.Id",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.name",
       "source": "Account.Name",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.industry",
       "source": "Account.Industry",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.tier",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.website",
       "source": "Account.Website",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "accounts.customer_since",
       "source": "Account.Customer_Since__c",
       "must_ask": false,
+      "may_ask": false,
       "rule": "parse date, three formats"
     },
     {
       "target": "accounts.owner_email",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.external_id",
       "source": "Contact.Id",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.account_external_id",
       "source": "Contact.AccountId",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.first_name",
       "source": "Contact.FirstName",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.last_name",
       "source": "Contact.LastName",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "contacts.email",
       "source": "Contact.Email",
       "must_ask": false,
-      "rule": "copy"
+      "may_ask": true,
+      "rule": "copy",
+      "note": "Five contacts have no email, which the target requires."
     },
     {
       "target": "contacts.phone",
       "source": "Contact.Phone",
       "must_ask": false,
-      "rule": "normalize to E.164"
+      "may_ask": true,
+      "rule": "normalize to E.164",
+      "note": "Three numbers have no area code and cannot be normalized."
     },
     {
       "target": "contacts.role",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy",
       "note": "Department here is a department, not a buying role."
     },
@@ -136,90 +152,108 @@
       "target": "deals.external_id",
       "source": "Opportunity.Id",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.account_external_id",
       "source": "Opportunity.AccountId",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.name",
       "source": "Opportunity.Name",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.amount",
       "source": "Opportunity.Amount",
       "must_ask": false,
-      "rule": "copy"
+      "may_ask": true,
+      "rule": "copy",
+      "note": "Four opportunities have no amount, which the target requires."
     },
     {
       "target": "deals.currency",
       "source": null,
       "must_ask": false,
-      "rule": "default USD"
+      "may_ask": true,
+      "rule": "default USD",
+      "note": "No currency field; confirming the USD default is reasonable."
     },
     {
       "target": "deals.stage",
       "source": "Opportunity.StageName",
       "must_ask": false,
+      "may_ask": false,
       "rule": "map values"
     },
     {
       "target": "deals.close_date",
       "source": "Opportunity.CloseDate",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "deals.owner_email",
       "source": null,
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "activities.external_id",
       "source": "Task.Id",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "activities.related_type",
       "source": "Task.WhatId",
       "must_ask": false,
+      "may_ask": false,
       "rule": "lookup on the record Id prefix"
     },
     {
       "target": "activities.related_external_id",
       "source": "Task.WhatId",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "activities.kind",
       "source": "Task.Type",
       "must_ask": false,
+      "may_ask": false,
       "rule": "map values; 'Other' becomes 'task'"
     },
     {
       "target": "activities.subject",
       "source": "Task.Subject",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     },
     {
       "target": "activities.occurred_at",
       "source": "Task.ActivityDate",
       "must_ask": false,
-      "rule": "date to timestamp"
+      "may_ask": true,
+      "rule": "cast date to timestamp",
+      "note": "A due date with no time, on tasks that may not have happened yet."
     },
     {
       "target": "activities.notes",
       "source": "Task.Description",
       "must_ask": false,
+      "may_ask": false,
       "rule": "copy"
     }
   ]

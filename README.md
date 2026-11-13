@@ -63,7 +63,7 @@ Pythons refuse installs outside one.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q                               # 166 tests, no network, no API key
+pytest -q                               # 167 tests, no network, no API key
 python scripts/run_eval.py --baseline   # the evaluation, with name matching instead of a model
 python -m firstsync.mcp_server          # the MCP server, over stdio
 ```
@@ -120,9 +120,21 @@ Reproduce with `python scripts/run_eval.py --baseline`. Raw output is in
 
 ### Claude
 
-**Not yet run.** `python scripts/run_eval.py` writes `results/claude-<model>.json` with
-accuracy, turns and cost per org, the model name and a hash of the prompt. Results will be
-added here once they exist. Org E is run once, at the end, with `--held-out`.
+One run per org so far, with `claude-sonnet-5-5`:
+
+| Org | Accuracy | Questions asked | Required | Extra | Cost |
+| --- | --- | --- | --- | --- | --- |
+| A | 100% | 4 | 0 | 2 | $0.17 |
+| B | 100% | 8 | 3 | 3 | $0.14 |
+| C | 100% | 10 | 2 | 6 | $0.16 |
+| D | 100% | 11 | 0 | 6 | $0.17 |
+
+**Read this with care.** Every source was right and every required question was asked,
+but Claude also asked 17 questions it did not need to, and 8 of its questions traced to a
+gap in the tool descriptions. The tools and prompt have been revised since, and this
+table is from before those changes. Details and the reasoning are in
+[docs/week2-first-eval.md](docs/week2-first-eval.md). A three-run rerun is pending, and
+org E is run once, at the end, with `--held-out`.
 
 ## How masking works
 
@@ -167,7 +179,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
-| Claude's mapping accuracy | **Not yet measured.** The mapping prompt has not been run. |
+| Claude's mapping accuracy | One run per org on A to D. See [the first evaluation](docs/week2-first-eval.md). Not yet rerun on the revised prompt. |
 | Salesforce REST client | Against mocked HTTP only. **Not yet run against a live org.** |
 | Live loader (`seed_org.py --live`) | Against mocked HTTP only. **Not yet run against a live org.** |
 | Org B metadata (`orgs/org_b/salesforce`) | XML is well formed. **Not yet deployed to a live org.** Orgs C, D and E have no live metadata yet. |
