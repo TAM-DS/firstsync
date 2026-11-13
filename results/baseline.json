@@ -1,6 +1,6 @@
 {
   "label": "baseline",
-  "date": "2026-11-13T03:04:56+00:00",
+  "date": "2026-11-13T03:32:54+00:00",
   "model": null,
   "prompt_sha256_12": null,
   "runs_per_org": 1,
@@ -19,6 +19,9 @@
             "missed": 6,
             "invented": 0
           },
+          "questions_asked": 0,
+          "questions_required": 0,
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -498,6 +501,9 @@
             "missed": 16,
             "invented": 0
           },
+          "questions_asked": 0,
+          "questions_required": 3,
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -887,6 +893,9 @@
             "missed": 6,
             "invented": 0
           },
+          "questions_asked": 0,
+          "questions_required": 2,
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -1381,6 +1390,9 @@
             "missed": 6,
             "invented": 0
           },
+          "questions_asked": 0,
+          "questions_required": 0,
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",

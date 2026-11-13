@@ -138,3 +138,24 @@ def test_baseline_cannot_see_through_org_b():
     targets = {m["target"] for m in baseline_mappings(client)}
     assert "accounts.industry" not in targets
     assert not any(t.startswith("deals.") for t in targets)
+
+
+def test_extra_questions_are_reported_but_do_not_change_accuracy():
+    proposals = perfect("org_b")
+    result = score(ANSWER_KEYS["org_b"], proposals)
+    assert result["questions_required"] == result["questions_asked"] == 3
+    assert result["extra_questions"] == []
+    for target in ("accounts.name", "deals.currency"):
+        proposals[target]["question_for_admin"] = "Is this right?"
+    result = score(ANSWER_KEYS["org_b"], proposals)
+    assert result["accuracy"] == 1.0
+    assert result["extra_questions"] == ["accounts.name", "deals.currency"]
+
+
+def test_asking_about_everything_is_visible_in_the_score():
+    proposals = perfect("org_a")
+    for proposal in proposals.values():
+        proposal["question_for_admin"] = "Please confirm."
+    result = score(ANSWER_KEYS["org_a"], proposals)
+    assert result["questions_required"] == 0
+    assert len(result["extra_questions"]) == 29

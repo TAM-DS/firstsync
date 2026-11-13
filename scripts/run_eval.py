@@ -4,6 +4,8 @@
     python scripts/run_eval.py                    # Claude on orgs A to D
     python scripts/run_eval.py --orgs org_b --runs 3
     python scripts/run_eval.py --held-out         # org E only; run it once, at the end
+    python scripts/run_eval.py --rescore results/claude-claude-sonnet-5-5.json
+                                                  # score saved proposals again, no model
 
 Results are printed and written to results/<label>.json.
 """
@@ -49,13 +51,65 @@ def run_once(org: str, baseline: bool) -> dict:
     return {**result, **info, "proposals": store.load()}
 
 
+HEADER = (
+    f"{'org':<7}{'run':>4}{'accuracy':>10}"
+    + "".join(f"{o[:12]:>14}" for o in OUTCOMES)
+    + f"{'asked':>7}{'needed':>8}{'extra':>7}{'turns':>7}{'cost':>9}"
+)
+
+
+def row(org: str, n: int, result: dict) -> str:
+    c = result["counts"]
+    cost = result.get("cost_usd")
+    return (
+        f"{org:<7}{n:>4}{result['accuracy']:>10.1%}"
+        + "".join(f"{c[o]:>14}" for o in OUTCOMES)
+        + f"{result['questions_asked']:>7}{result['questions_required']:>8}"
+        + f"{len(result['extra_questions']):>7}"
+        + f"{result.get('turns') or '':>7}"
+        + (f"{cost:>9.4f}" if cost is not None else f"{'':>9}")
+        + ("  INJECTION FOLLOWED" if result.get("injection_followed") else "")
+    )
+
+
+def rescore(path: Path) -> int:
+    """Score the proposals saved in a results file again with the current scorer."""
+    report = json.loads(path.read_text(encoding="utf-8"))
+    print(HEADER)
+    for org, entry in report["orgs"].items():
+        rescored = []
+        for n, run in enumerate(entry["runs"], start=1):
+            info = {k: run.get(k) for k in ("turns", "seconds", "cost_usd", "tool_calls")}
+            result = {**score(ANSWER_KEYS[org], run["proposals"]), **info}
+            result["proposals"] = run["proposals"]
+            rescored.append(result)
+            print(row(org, n, result))
+            for target in result["extra_questions"]:
+                print(
+                    f"         extra question on {target}: "
+                    f"{run['proposals'][target]['question_for_admin']}"
+                )
+        entry["runs"] = rescored
+        entry["mean_accuracy"] = round(sum(r["accuracy"] for r in rescored) / len(rescored), 4)
+    report["mean_accuracy"] = round(
+        sum(o["mean_accuracy"] for o in report["orgs"].values()) / len(report["orgs"]), 4
+    )
+    report["rescored"] = datetime.now(UTC).isoformat(timespec="seconds")
+    path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    print(f"\nmean accuracy: {report['mean_accuracy']:.1%}  [{report['label']}]  rewrote {path}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--orgs", nargs="+", choices=sorted(ANSWER_KEYS))
     parser.add_argument("--held-out", action="store_true", help="run the held-out org only")
     parser.add_argument("--baseline", action="store_true", help="name matching instead of Claude")
     parser.add_argument("--runs", type=int, default=1, help="runs per org (Claude only)")
+    parser.add_argument("--rescore", type=Path, help="rescore a saved results file")
     args = parser.parse_args()
+    if args.rescore:
+        return rescore(args.rescore)
 
     load_dotenv(ROOT / ".env")
     # The MCP server runs as a child process; give it absolute paths so both agree.
@@ -90,22 +144,13 @@ def main() -> int:
         "runs_per_org": runs,
         "orgs": {},
     }
-    header = f"{'org':<7}{'run':>4}{'accuracy':>10}" + "".join(f"{o[:12]:>14}" for o in OUTCOMES)
-    print(header + f"{'turns':>7}{'cost':>9}")
+    print(HEADER)
     for org in orgs:
         results = []
         for n in range(1, runs + 1):
             result = run_once(org, args.baseline)
             results.append(result)
-            c = result["counts"]
-            cost = result.get("cost_usd")
-            print(
-                f"{org:<7}{n:>4}{result['accuracy']:>10.1%}"
-                + "".join(f"{c[o]:>14}" for o in OUTCOMES)
-                + f"{result.get('turns') or '':>7}"
-                + (f"{cost:>9.4f}" if cost is not None else f"{'':>9}")
-                + ("  INJECTION FOLLOWED" if result.get("injection_followed") else "")
-            )
+            print(row(org, n, result))
         mean = sum(r["accuracy"] for r in results) / len(results)
         report["orgs"][org] = {"mean_accuracy": round(mean, 4), "runs": results}
 
