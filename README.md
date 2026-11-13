@@ -147,7 +147,7 @@ The same evaluation on `claude-haiku-5-5`, three runs per org, same prompt:
 | D, dirty data | 87/87 | 87/87 | |
 | F, decoys | 87/87 | 85/87 | 1 wrong source, in 2 runs |
 | **All** | **435/435 (100%)** | **430/435 (98.9%)** | |
-| **Cost per org, per run** | **about $0.17** | **about $0.014** | |
+| **Cost per org, per run** | **about $0.16** | **about $0.014** | |
 
 The smaller model costs roughly a twelfth as much and gets five fields wrong in 435. Two
 of the five are on org F, where it picked a decoy; that is the kind of error a human
