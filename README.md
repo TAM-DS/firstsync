@@ -48,7 +48,12 @@ All data is invented and every email uses the reserved `.example` domain.
 
 ## Quick start
 
+Needs Python 3.11 or later. Use a virtual environment; Homebrew and most Linux system
+Pythons refuse installs outside one.
+
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q                       # 53 tests, no network, no API key
 python -m firstsync.mcp_server  # the MCP server, over stdio
