@@ -98,7 +98,7 @@ like emails is never treated that way.
 | Salesforce REST client | Against mocked HTTP only. **Not yet run against a live org.** |
 | Live loader (`seed_org.py --live`) | Against mocked HTTP only. **Not yet run against a live org.** |
 | Org B metadata (`orgs/org_b/salesforce`) | XML is well formed. **Not yet deployed to a live org.** |
-| `scripts/describe_org.py` | **Not yet run.** It needs an API key. |
+| `scripts/describe_org.py` | Run once against org B: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
 
 ## Loading a test org into Salesforce
 
