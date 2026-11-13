@@ -10,7 +10,7 @@ plain language. Deterministic code decides what actually runs.
 
 > **Status: week 2 of 6.** Claude can inspect an org and propose a validated mapping for
 > every target field, and an evaluation scores those proposals against answer keys for
-> five synthetic orgs. Dry-run, approval, migration and sync are not built yet. This is a
+> six synthetic orgs. Dry-run, approval, migration and sync are not built yet. This is a
 > reference implementation with no customers. See
 > [What is and is not tested](#what-is-and-is-not-tested).
 
@@ -42,7 +42,7 @@ Seven tools, served from one MCP server:
 | `rule_test` | Runs a transformation rule on a sample and reports what failed and why |
 | `mapping_propose` | Validates mapping proposals and stores the valid ones for approval |
 
-Five synthetic Salesforce orgs, each with an answer key:
+Six synthetic Salesforce orgs, each with an answer key:
 
 | Org | Theme | What is planted |
 | --- | --- | --- |
@@ -51,6 +51,7 @@ Five synthetic Salesforce orgs, each with an answer key:
 | C | Picklist drift | The org's own stage names, a retired stage still on old records, free text where a picklist should be |
 | D | Dirty data | Three date formats in one field, duplicate contacts, missing required values, four phone formats, and a record that tries to instruct the model |
 | E | Locked down | Two fields and one object the connected user cannot read. Held out: never used while tuning prompts. |
+| F | Decoys | Five target fields each have two plausible sources, and the one whose name fits best is wrong: an empty standard field beside a filled custom one, a `Tier__c` that holds a support level, a `Phone` that holds an extension |
 
 All data is invented and every email uses the reserved `.example` domain.
 
@@ -63,7 +64,7 @@ Pythons refuse installs outside one.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q                               # 167 tests, no network, no API key
+pytest -q                               # 174 tests, no network, no API key
 python scripts/run_eval.py --baseline   # the evaluation, with name matching instead of a model
 python -m firstsync.mcp_server          # the MCP server, over stdio
 ```
@@ -74,7 +75,7 @@ With Claude:
 pip install -e ".[agent]"
 cp .env.example .env                    # then put your ANTHROPIC_API_KEY in .env
 python scripts/describe_org.py org_b    # Claude reports on an org in plain language
-python scripts/run_eval.py              # Claude proposes mappings for orgs A to D, scored
+python scripts/run_eval.py              # Claude proposes mappings for every org but E, scored
 ```
 
 ## The evaluation
@@ -105,7 +106,8 @@ Org D also reports whether the instruction planted in its data was followed.
 ### Baseline: name matching, no model
 
 This is the floor. It lines up `first_name` with `FirstName` and stops, which is what a
-simple integration tool does. It never guesses wrong and never asks a question.
+simple integration tool does. It never asks a question, and on org F it walks into every
+decoy.
 
 | Org | Accuracy | Correct | Should have asked | Wrong | Missed | Invented |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -113,7 +115,8 @@ simple integration tool does. It never guesses wrong and never asks a question.
 | B | 44.8% | 13 | 0 | 0 | 16 | 0 |
 | C | 75.9% | 22 | 1 | 0 | 6 | 0 |
 | D | 79.3% | 23 | 0 | 0 | 6 | 0 |
-| **Mean** | **69.8%** | | | | | |
+| F | 65.5% | 19 | 0 | 5 | 5 | 0 |
+| **Mean** | **69.0%** | | | | | |
 
 Reproduce with `python scripts/run_eval.py --baseline`. Raw output is in
 [results/baseline.json](results/baseline.json).
@@ -129,14 +132,56 @@ Three runs per org with `claude-sonnet-5-5`, mapping prompt `a2d2c0412040`:
 | C | 100%, 100%, 100% | 2 | 3, 4, 3 | 0, 0, 0 | 19 | $0.16 |
 | D | 100%, 100%, 100% | 0 | 5, 6, 6 | 0, 0, 0 | 19 | $0.15 |
 
-Across the 12 runs: 348 of 348 target fields correct, against 69.8% for the baseline; 2
-extra questions in total; the instruction planted in org D was never followed; $1.87 in
-model cost. Raw output: [results/claude-claude-sonnet-5-5.json](results/claude-claude-sonnet-5-5.json).
+Org F, the decoys, with the same model and prompt: 100% in all three runs (87 of 87
+fields). Claude chose the right field over the decoy every time, with reasons drawn from
+the values ("Business Phone values are short 5-character extensions that cannot be E.164;
+MobilePhone holds full US-format numbers"). It asked one question across the three runs,
+an allowed one about tasks that have not happened yet, and none that were extra. About
+$0.18 per run.
+
+An earlier three-run pass on org F also scored 87 of 87, with 5 extra questions, but its
+raw file was lost to a bug in the evaluation script, since fixed, that overwrote results
+when a single org was run. The figures above are from the rerun, which is in the results
+file. The rerun followed one change to a tool description (stating that `rule_test` runs
+on real values), so the two passes are not a like-for-like repeat.
+
+### Small model against large
+
+The same evaluation on `claude-haiku-5-5`, three runs per org, same prompt. Raw output:
+[results/claude-claude-haiku-5-5.json](results/claude-claude-haiku-5-5.json).
+
+| Org | Sonnet 5.5 | Haiku 5.5 |
+| --- | --- | --- |
+| A, clean | 87/87 | 87/87 |
+| B, renamed and custom | 87/87 | 86/87 |
+| C, picklist drift | 87/87 | 85/87 |
+| D, dirty data | 87/87 | 87/87 |
+| F, decoys | 87/87 | 85/87 |
+| **All** | **435/435 (100%)** | **430/435 (98.9%)** |
+| **Cost per org, per run** | **about $0.16** | **about $0.014** |
+
+The smaller model costs roughly a twelfth as much. Org D's planted instruction was
+followed by neither model. Reading Haiku's five misses shows they are of two kinds:
+
+- **Three are a protocol slip, not a misreading** (org B once, org C twice, all on
+  `accounts.tier`). Haiku found the right field, saw that nothing says which code is
+  which tier, and asked the right question, but left the source empty "until the
+  administrator answers" instead of naming it. The scorer counts that as a miss. A
+  reviewer would see the question and lose nothing.
+- **Two are real, both on org F's phone decoy.** `Contact.Phone` holds only an extension.
+  Haiku tested it, saw all 50 values fail, and proposed it anyway. In one run it raised a
+  question naming the better field. In the other it raised nothing, having concluded
+  that the failure came from masking: it believed the rule had run on masked values. It
+  had not, but the tool's wording allowed that reading, and the wording is now explicit.
+
+So the comparison is closer than 98.9% against 100% suggests on comprehension, and the
+one unflagged error traces partly to a tool description. Haiku also asked more
+hypothetical questions on org B ("what if an unsampled record holds another value?").
 
 **How to read this.**
 
-- Source accuracy is at the ceiling, so these four orgs cannot yet separate one prompt or
-  model from another. Harder cases are planned.
+- Source accuracy is at the ceiling for the larger model on every org run so far, org F
+  included. The evaluation does separate the two models, which is what it is now for.
 - "Accuracy" scores the source field and whether a required question was asked. It does
   not yet score the transformation rule. Checking rules by hand found one that would
   fail: in one org B run, a text date was proposed with no date-parsing step. Week 3's
@@ -191,7 +236,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
-| Claude's mapping accuracy | Three runs per org on A to D with the revised prompt. Org E not yet run. |
+| Claude's mapping accuracy | Three runs per org on A to D and F, on two models, with raw results in `results/`. Org E not yet run. |
 | Salesforce REST client | Against mocked HTTP only. **Not yet run against a live org.** |
 | Live loader (`seed_org.py --live`) | Against mocked HTTP only. **Not yet run against a live org.** |
 | Org B metadata (`orgs/org_b/salesforce`) | XML is well formed. **Not yet deployed to a live org.** Orgs C, D and E have no live metadata yet. |

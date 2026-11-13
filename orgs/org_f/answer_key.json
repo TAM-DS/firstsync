@@ -1,0 +1,223 @@
+{
+  "org": "org_f",
+  "planted": [
+    "Account.Industry exists and is empty on every record; Vertical__c holds the industry.",
+    "Account.Tier__c holds a support level; Plan__c holds Free/Standard/Enterprise.",
+    "Contact.Phone holds only an extension; MobilePhone holds the full number.",
+    "Contact.Role__c holds a job function; Buying_Role__c holds the buying role.",
+    "Opportunity.Stage__c holds a forecast category; StageName holds the stage.",
+    "Account has two email fields; Owner_Email__c is the owner, Billing_Email__c is not."
+  ],
+  "mappings": [
+    {
+      "target": "accounts.external_id",
+      "source": "Account.Id",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "accounts.name",
+      "source": "Account.Name",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "accounts.industry",
+      "source": "Account.Vertical__c",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy",
+      "note": "Industry is empty everywhere."
+    },
+    {
+      "target": "accounts.tier",
+      "source": "Account.Plan__c",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "map values to lower case",
+      "note": "The values match the target exactly; Tier__c is a support level."
+    },
+    {
+      "target": "accounts.website",
+      "source": "Account.Website",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "accounts.customer_since",
+      "source": null,
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "accounts.owner_email",
+      "source": "Account.Owner_Email__c",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "contacts.external_id",
+      "source": "Contact.Id",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "contacts.account_external_id",
+      "source": "Contact.AccountId",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "contacts.first_name",
+      "source": "Contact.FirstName",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "contacts.last_name",
+      "source": "Contact.LastName",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "contacts.email",
+      "source": "Contact.Email",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "contacts.phone",
+      "source": "Contact.MobilePhone",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "normalize to E.164",
+      "note": "Contact.Phone holds a four-digit extension."
+    },
+    {
+      "target": "contacts.role",
+      "source": "Contact.Buying_Role__c",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "map values"
+    },
+    {
+      "target": "deals.external_id",
+      "source": "Opportunity.Id",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "deals.account_external_id",
+      "source": "Opportunity.AccountId",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "deals.name",
+      "source": "Opportunity.Name",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "deals.amount",
+      "source": "Opportunity.Amount",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "deals.currency",
+      "source": null,
+      "must_ask": false,
+      "may_ask": true,
+      "rule": "default USD",
+      "note": "No currency field; confirming the USD default is reasonable."
+    },
+    {
+      "target": "deals.stage",
+      "source": "Opportunity.StageName",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "map values",
+      "note": "Stage__c is a forecast category."
+    },
+    {
+      "target": "deals.close_date",
+      "source": "Opportunity.CloseDate",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "deals.owner_email",
+      "source": null,
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "activities.external_id",
+      "source": "Task.Id",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "activities.related_type",
+      "source": "Task.WhatId",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "lookup on the record Id prefix"
+    },
+    {
+      "target": "activities.related_external_id",
+      "source": "Task.WhatId",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "activities.kind",
+      "source": "Task.Type",
+      "must_ask": false,
+      "may_ask": true,
+      "rule": "map values; 'Other' becomes 'task'",
+      "note": "'Other' has no exact equivalent in the target; confirming 'task' is reasonable."
+    },
+    {
+      "target": "activities.subject",
+      "source": "Task.Subject",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    },
+    {
+      "target": "activities.occurred_at",
+      "source": "Task.ActivityDate",
+      "must_ask": false,
+      "may_ask": true,
+      "rule": "cast date to timestamp",
+      "note": "A due date with no time, on tasks that may not have happened yet."
+    },
+    {
+      "target": "activities.notes",
+      "source": "Task.Description",
+      "must_ask": false,
+      "may_ask": false,
+      "rule": "copy"
+    }
+  ]
+}

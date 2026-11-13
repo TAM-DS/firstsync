@@ -169,3 +169,28 @@ def test_asking_about_everything_is_visible_in_the_score():
     result = score(ANSWER_KEYS["org_a"], proposals)
     assert result["questions_required"] == 0
     assert len(result["extra_questions"]) == 26  # three fields allow a question in every org
+
+
+def test_org_f_decoys_are_settled_by_values_the_model_can_see():
+    org_f = get_client("org_f")
+    accounts = tools.sf_sample_records(org_f, "Account")["records"]
+    assert all(a["Industry"] is None for a in accounts)
+    assert {a["Plan__c"] for a in accounts} == {"Enterprise", "Standard", "Free"}
+    assert {a["Tier__c"] for a in accounts} <= {"24x7", "Business Hours", "None"}
+    contacts = tools.sf_sample_records(org_f, "Contact")
+    assert {c["Phone"] for c in contacts["records"]} == {"x9999"}
+    assert all(c["MobilePhone"] == "(999) 999-9999" for c in contacts["records"])
+    assert contacts["masking"]["Role__c"] == "categorical"
+    extension = tools.rule_test(org_f, "Contact.Phone", [{"op": "normalize_phone"}])
+    assert extension["ok"] == 0
+
+
+def test_name_matching_walks_into_the_decoys():
+    client = get_client("org_f")
+    store = mapping.ProposalStore("org_f")
+    mapping.propose(client, store, baseline_mappings(client))
+    fields = {f["target"]: f for f in score(ANSWER_KEYS["org_f"], store.load())["fields"]}
+    assert fields["accounts.industry"]["outcome"] == "wrong_source"
+    assert fields["accounts.tier"]["outcome"] == "wrong_source"
+    assert fields["contacts.phone"]["outcome"] == "wrong_source"
+    assert fields["contacts.role"]["outcome"] == "wrong_source"

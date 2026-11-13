@@ -266,10 +266,46 @@ ORG_E = _key(
     held_out=True,
 )
 
+ORG_F = _key(
+    "org_f",
+    [
+        "Account.Industry exists and is empty on every record; Vertical__c holds the industry.",
+        "Account.Tier__c holds a support level; Plan__c holds Free/Standard/Enterprise.",
+        "Contact.Phone holds only an extension; MobilePhone holds the full number.",
+        "Contact.Role__c holds a job function; Buying_Role__c holds the buying role.",
+        "Opportunity.Stage__c holds a forecast category; StageName holds the stage.",
+        "Account has two email fields; Owner_Email__c is the owner, Billing_Email__c is not.",
+    ],
+    [
+        _m("accounts.industry", "Account.Vertical__c", note="Industry is empty everywhere."),
+        _m(
+            "accounts.tier",
+            "Account.Plan__c",
+            "map values to lower case",
+            note="The values match the target exactly; Tier__c is a support level.",
+        ),
+        _m("accounts.owner_email", "Account.Owner_Email__c"),
+        _m(
+            "contacts.phone",
+            "Contact.MobilePhone",
+            "normalize to E.164",
+            note="Contact.Phone holds a four-digit extension.",
+        ),
+        _m("contacts.role", "Contact.Buying_Role__c", "map values"),
+        _m(
+            "deals.stage",
+            "Opportunity.StageName",
+            "map values",
+            note="Stage__c is a forecast category.",
+        ),
+    ],
+)
+
 ANSWER_KEYS = {
     "org_a": ORG_A,
     "org_b": ORG_B,
     "org_c": ORG_C,
     "org_d": ORG_D,
     "org_e": ORG_E,
+    "org_f": ORG_F,
 }

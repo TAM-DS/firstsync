@@ -82,6 +82,7 @@ default before approval can be requested.
 | C | Picklist drift | Built |
 | D | Dirty data, including a record that tries to instruct the model | Built |
 | E | Locked down, held out from prompt tuning | Built |
+| F | Decoys: two plausible sources for one target, where the better-named one is wrong | Built |
 
 Each org has an answer key: the correct source for every target field, including the
 fields that should be left unmapped and the fields where the only correct behaviour is to

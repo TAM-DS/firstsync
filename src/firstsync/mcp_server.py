@@ -138,7 +138,9 @@ RULE_TEST_DOC = (
     "Run a transformation rule on up to 50 sampled values of one source field "
     "('Object.Field') and report how many succeeded, why the rest failed, and which values "
     "had no entry in a map_values or lookup table. Give 'target' ('table.field') to also "
-    "check that the results fit that target field. Nothing is stored.\n\n" + RULE_HELP
+    "check that the results fit that target field. The rule runs on the real values; "
+    "only the values displayed in the result are masked, so a reported failure is a real "
+    "one. Nothing is stored.\n\n" + RULE_HELP
 )
 MAPPING_PROPOSE_DOC = (
     "Propose field mappings for human approval. Each mapping is an object with: "

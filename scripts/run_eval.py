@@ -136,14 +136,20 @@ def main() -> int:
         label += "-held-out"
     runs = 1 if args.baseline else max(1, args.runs)
 
-    report = {
-        "label": label,
-        "date": datetime.now(UTC).isoformat(timespec="seconds"),
-        "model": None if args.baseline else model,
-        "prompt_sha256_12": None if args.baseline else prompt_hash(MAP_SYSTEM),
-        "runs_per_org": runs,
-        "orgs": {},
-    }
+    out = ROOT / "results" / f"{label}.json"
+    stamp = datetime.now(UTC).isoformat(timespec="seconds")
+    prompt = None if args.baseline else prompt_hash(MAP_SYSTEM)
+    # A run of some orgs must not erase earlier results for the others: start from the
+    # existing file and replace only the orgs run now. Each org records its own date and
+    # prompt, so results from different prompt versions cannot be mistaken for one run.
+    report = {"label": label, "model": None if args.baseline else model, "orgs": {}}
+    if out.is_file() and not args.baseline:
+        previous = json.loads(out.read_text(encoding="utf-8"))
+        for name, entry in previous.get("orgs", {}).items():
+            entry.setdefault("date", previous.get("date"))
+            entry.setdefault("prompt_sha256_12", previous.get("prompt_sha256_12"))
+            report["orgs"][name] = entry
+    report["date"] = stamp
     print(HEADER)
     for org in orgs:
         results = []
@@ -152,12 +158,23 @@ def main() -> int:
             results.append(result)
             print(row(org, n, result))
         mean = sum(r["accuracy"] for r in results) / len(results)
-        report["orgs"][org] = {"mean_accuracy": round(mean, 4), "runs": results}
+        report["orgs"][org] = {
+            "mean_accuracy": round(mean, 4),
+            "date": stamp,
+            "prompt_sha256_12": prompt,
+            "runs": results,
+        }
 
-    overall = sum(o["mean_accuracy"] for o in report["orgs"].values()) / len(report["orgs"])
-    report["mean_accuracy"] = round(overall, 4)
-    print(f"\nmean accuracy across {len(orgs)} org(s): {overall:.1%}  [{label}]")
-    out = ROOT / "results" / f"{label}.json"
+    ran = sum(report["orgs"][o]["mean_accuracy"] for o in orgs) / len(orgs)
+    everything = report["orgs"].values()
+    report["mean_accuracy"] = round(
+        sum(o["mean_accuracy"] for o in everything) / len(everything), 4
+    )
+    report["orgs"] = dict(sorted(report["orgs"].items()))
+    print(f"\nmean accuracy across {len(orgs)} org(s) run now: {ran:.1%}  [{label}]")
+    kept = sorted(set(report["orgs"]) - set(orgs))
+    if kept:
+        print(f"kept earlier results for: {', '.join(kept)}")
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {out.relative_to(ROOT)}")
