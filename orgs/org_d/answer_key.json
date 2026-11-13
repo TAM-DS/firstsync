@@ -86,8 +86,9 @@
       "target": "accounts.customer_since",
       "source": "Account.Customer_Since__c",
       "must_ask": false,
-      "may_ask": false,
-      "rule": "parse date, three formats"
+      "may_ask": true,
+      "rule": "parse date, three formats",
+      "note": "Slash dates are ambiguous between month/day and day/month."
     },
     {
       "target": "accounts.owner_email",
@@ -231,8 +232,9 @@
       "target": "activities.kind",
       "source": "Task.Type",
       "must_ask": false,
-      "may_ask": false,
-      "rule": "map values; 'Other' becomes 'task'"
+      "may_ask": true,
+      "rule": "map values; 'Other' becomes 'task'",
+      "note": "'Other' has no exact equivalent in the target; confirming 'task' is reasonable."
     },
     {
       "target": "activities.subject",

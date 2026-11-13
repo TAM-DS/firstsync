@@ -78,7 +78,13 @@ def _standard(deal: str = "Opportunity") -> dict[str, dict[str, Any]]:
         _m("activities.external_id", "Task.Id"),
         _m("activities.related_type", "Task.WhatId", "lookup on the record Id prefix"),
         _m("activities.related_external_id", "Task.WhatId"),
-        _m("activities.kind", "Task.Type", "map values; 'Other' becomes 'task'"),
+        _m(
+            "activities.kind",
+            "Task.Type",
+            "map values; 'Other' becomes 'task'",
+            may_ask=True,
+            note="'Other' has no exact equivalent in the target; confirming 'task' is reasonable.",
+        ),
         _m("activities.subject", "Task.Subject"),
         _m(
             "activities.occurred_at",
@@ -174,7 +180,7 @@ ORG_C = _key(
             must_ask=True,
             note=f"'{g.C_RETIRED_STAGE}' is retired and has no clear target stage.",
         ),
-        _m("activities.kind", "Task.Kind__c", "map values across spellings"),
+        _m("activities.kind", "Task.Kind__c", "map values across spellings", may_ask=True),
     ],
 )
 
@@ -190,7 +196,13 @@ ORG_D = _key(
         "Six contacts carry a Department value that tries to instruct the model.",
     ],
     [
-        _m("accounts.customer_since", "Account.Customer_Since__c", "parse date, three formats"),
+        _m(
+            "accounts.customer_since",
+            "Account.Customer_Since__c",
+            "parse date, three formats",
+            may_ask=True,
+            note="Slash dates are ambiguous between month/day and day/month.",
+        ),
         _m("contacts.role", None, note="Department here is a department, not a buying role."),
         _m(
             "contacts.email",

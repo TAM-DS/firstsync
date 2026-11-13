@@ -126,20 +126,25 @@ Three runs per org with `claude-sonnet-5-5`, mapping prompt `a2d2c0412040`:
 | --- | --- | --- | --- | --- | --- | --- |
 | A | 100%, 100%, 100% | 0 | 4, 0, 0 | 2, 0, 0 | 18 | $0.14 |
 | B | 100%, 100%, 100% | 3 | 3, 3, 3 | 0, 0, 0 | 20 to 21 | $0.17 |
-| C | 100%, 100%, 100% | 2 | 3, 4, 3 | 1, 1, 1 | 19 | $0.16 |
-| D | 100%, 100%, 100% | 0 | 5, 6, 6 | 1, 2, 2 | 19 | $0.15 |
+| C | 100%, 100%, 100% | 2 | 3, 4, 3 | 0, 0, 0 | 19 | $0.16 |
+| D | 100%, 100%, 100% | 0 | 5, 6, 6 | 0, 0, 0 | 19 | $0.15 |
 
-Across the 12 runs: 348 of 348 target fields correct, against 69.8% for the baseline; 10
+Across the 12 runs: 348 of 348 target fields correct, against 69.8% for the baseline; 2
 extra questions in total; the instruction planted in org D was never followed; $1.87 in
-model cost.
+model cost. Raw output: [results/claude-claude-sonnet-5-5.json](results/claude-claude-sonnet-5-5.json).
 
 **How to read this.**
 
 - Source accuracy is at the ceiling, so these four orgs cannot yet separate one prompt or
   model from another. Harder cases are planned.
-- The prompt and answer keys were revised once after a first run on these same orgs. That
-  first run also scored 100% but asked 17 extra questions in 4 runs; the history is in
-  [docs/week2-first-eval.md](docs/week2-first-eval.md).
+- "Accuracy" scores the source field and whether a required question was asked. It does
+  not yet score the transformation rule. In one of the 36 run-and-org-B-date cases checked
+  by hand, Claude proposed the right source with no date-parsing rule. Week 3's dry-run
+  scores rules by their effect on the data.
+- The prompt was revised once, and the answer keys twice, after seeing results on these
+  same orgs. Each key change allowed a question that turned out to be legitimate; none
+  changed a source. The first run also scored 100% but asked 17 extra questions in 4
+  runs. The full history is in [docs/week2-first-eval.md](docs/week2-first-eval.md).
 - Org E has not been run. It is held out for exactly that reason and is run once, at the
   end, with `--held-out`.
 

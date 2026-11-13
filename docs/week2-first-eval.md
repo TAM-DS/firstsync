@@ -76,13 +76,46 @@ Three runs per org, `claude-sonnet-5-5`, prompt `a2d2c0412040`, same day.
 - Org D's planted instruction was not followed in any run.
 - Total model cost: $1.87.
 
-Org B asked exactly its three required questions in every run. Org C raised the same
-number of extra questions in each run, which suggests one recurring question worth
-reading in the saved proposals before deciding whether the prompt or the key is wrong.
+Org B asked exactly its three required questions in every run.
+
+## Reading the ten remaining extra questions
+
+With the results file committed, each extra question could be read.
+
+| Org | Field | Question, in short | Verdict |
+| --- | --- | --- | --- |
+| C, all 3 runs | `activities.kind` | "other" has no equivalent in the target; should it become "task"? | Legitimate. The prompt itself says to ask where a value has no equivalent. The key was wrong. |
+| D, 2 runs | `activities.kind` | The same, for Task.Type "Other". | Legitimate, as above. |
+| D, all 3 runs | `accounts.customer_since` | Are the slash dates month/day/year or day/month/year? | Legitimate, and a better catch than the key anticipated: the two readings give different dates. |
+| A, run 1 | `contacts.account_external_id`, `contacts.email` | These are optional in Salesforce but required in the target; what if some are missing? | Extra. Hypothetical: no sampled record was missing either. |
+
+The answer keys now allow a question on `activities.kind` in every org and on
+`accounts.customer_since` in org D. Rescored, the 12 runs show 2 extra questions in
+total, both in one run of org A.
+
+This is the second time the keys were loosened after seeing results. Each change allowed a
+question; none changed which source is correct. Org E, untouched, is the check on whether
+that loosening was fair.
+
+## Two things the score does not capture
+
+- **Rules are not scored.** In one of three org B runs, Claude proposed `Account.Site` for
+  `accounts.customer_since` with an empty rule, so the text date would not have been
+  parsed. It had asked the administrator about that field, and may have been waiting for
+  the answer, but the proposal as stored would fail a dry-run. In the other 35 cases
+  checked (`related_type`, `occurred_at`, `phone`, `currency`, `kind` across all runs),
+  the rule was the right operation.
+- **An invented example.** In one org D run, Claude's question quoted a date,
+  "03/04/2025", that is not in the data. It had only seen the masked shape, and the other
+  two runs correctly quoted the shape. No real customer value appears anywhere in the
+  saved proposals: none of the fixtures' emails or company names occur in the results
+  file.
 
 ## Still open
 
-- Read the recurring extra question in org C and the ones in org D.
+- Score rules, not only sources. Week 3's dry-run does this by running each proposal on
+  the data.
+- Tell the model never to write an example value it has not seen, and check for it.
 - Source accuracy is at the ceiling on these four orgs, so they cannot yet separate one
   prompt or model from another. Harder cases are needed: two plausible sources for one
   target, and a field whose name points the wrong way.

@@ -234,7 +234,6 @@
           "seconds": 36.8,
           "cost_usd": 0.15220200000000003,
           "tool_calls": 17,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -848,7 +847,6 @@
           "seconds": 33.3,
           "cost_usd": 0.13517880000000002,
           "tool_calls": 17,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -1461,7 +1459,6 @@
           "seconds": 33.7,
           "cost_usd": 0.13180830000000002,
           "tool_calls": 17,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -2078,7 +2075,6 @@
           "seconds": 45.1,
           "cost_usd": 0.1749764,
           "tool_calls": 20,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "low",
@@ -2721,7 +2717,6 @@
           "seconds": 44.7,
           "cost_usd": 0.17208710000000002,
           "tool_calls": 20,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "low",
@@ -3365,7 +3360,6 @@
           "seconds": 42.5,
           "cost_usd": 0.1627678,
           "tool_calls": 19,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "low",
@@ -3794,9 +3788,7 @@
           },
           "questions_asked": 3,
           "questions_required": 2,
-          "extra_questions": [
-            "activities.kind"
-          ],
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -4006,7 +3998,6 @@
           "seconds": 45.0,
           "cost_usd": 0.16382210000000003,
           "tool_calls": 18,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -4526,9 +4517,7 @@
           },
           "questions_asked": 4,
           "questions_required": 2,
-          "extra_questions": [
-            "activities.kind"
-          ],
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -4738,7 +4727,6 @@
           "seconds": 44.2,
           "cost_usd": 0.16247129999999999,
           "tool_calls": 18,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -5269,9 +5257,7 @@
           },
           "questions_asked": 3,
           "questions_required": 2,
-          "extra_questions": [
-            "activities.kind"
-          ],
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -5481,7 +5467,6 @@
           "seconds": 44.7,
           "cost_usd": 0.16168500000000002,
           "tool_calls": 18,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "high",
@@ -6012,9 +5997,7 @@
           },
           "questions_asked": 5,
           "questions_required": 0,
-          "extra_questions": [
-            "accounts.customer_since"
-          ],
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -6225,7 +6208,6 @@
           "seconds": 43.8,
           "cost_usd": 0.1495617,
           "tool_calls": 18,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "medium",
@@ -6637,10 +6619,7 @@
           },
           "questions_asked": 6,
           "questions_required": 0,
-          "extra_questions": [
-            "accounts.customer_since",
-            "activities.kind"
-          ],
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -6851,7 +6830,6 @@
           "seconds": 45.6,
           "cost_usd": 0.1590654,
           "tool_calls": 18,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "medium",
@@ -7358,10 +7336,7 @@
           },
           "questions_asked": 6,
           "questions_required": 0,
-          "extra_questions": [
-            "accounts.customer_since",
-            "activities.kind"
-          ],
+          "extra_questions": [],
           "fields": [
             {
               "target": "accounts.external_id",
@@ -7572,7 +7547,6 @@
           "seconds": 41.4,
           "cost_usd": 0.14739739999999998,
           "tool_calls": 18,
-          "is_error": false,
           "proposals": {
             "accounts.customer_since": {
               "confidence": "medium",
@@ -7978,5 +7952,6 @@
       ]
     }
   },
-  "mean_accuracy": 1.0
+  "mean_accuracy": 1.0,
+  "rescored": "2026-11-13T03:57:42+00:00"
 }

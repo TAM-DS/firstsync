@@ -191,7 +191,7 @@
       "target": "activities.kind",
       "source": "Task.Kind__c",
       "must_ask": false,
-      "may_ask": false,
+      "may_ask": true,
       "rule": "map values across spellings"
     },
     {

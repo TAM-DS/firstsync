@@ -168,4 +168,4 @@ def test_asking_about_everything_is_visible_in_the_score():
         proposal["question_for_admin"] = "Please confirm."
     result = score(ANSWER_KEYS["org_a"], proposals)
     assert result["questions_required"] == 0
-    assert len(result["extra_questions"]) == 27  # two fields allow a question in every org
+    assert len(result["extra_questions"]) == 26  # three fields allow a question in every org
