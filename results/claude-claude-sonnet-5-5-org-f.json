@@ -1,0 +1,2114 @@
+{
+  "label": "claude-claude-sonnet-5-5",
+  "date": "2026-11-13T04:04:28+00:00",
+  "model": "claude-sonnet-5-5",
+  "prompt_sha256_12": "a2d2c0412040",
+  "runs_per_org": 3,
+  "orgs": {
+    "org_f": {
+      "mean_accuracy": 1.0,
+      "runs": [
+        {
+          "org": "org_f",
+          "total": 29,
+          "accuracy": 1.0,
+          "counts": {
+            "correct": 29,
+            "should_have_asked": 0,
+            "wrong_source": 0,
+            "missed": 0,
+            "invented": 0
+          },
+          "questions_asked": 4,
+          "questions_required": 0,
+          "extra_questions": [
+            "activities.subject",
+            "contacts.email",
+            "deals.amount"
+          ],
+          "fields": [
+            {
+              "target": "accounts.external_id",
+              "outcome": "correct",
+              "expected": "Account.Id",
+              "proposed": "Account.Id",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.name",
+              "outcome": "correct",
+              "expected": "Account.Name",
+              "proposed": "Account.Name",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.industry",
+              "outcome": "correct",
+              "expected": "Account.Vertical__c",
+              "proposed": "Account.Vertical__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.tier",
+              "outcome": "correct",
+              "expected": "Account.Plan__c",
+              "proposed": "Account.Plan__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.website",
+              "outcome": "correct",
+              "expected": "Account.Website",
+              "proposed": "Account.Website",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.customer_since",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "accounts.owner_email",
+              "outcome": "correct",
+              "expected": "Account.Owner_Email__c",
+              "proposed": "Account.Owner_Email__c",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.external_id",
+              "outcome": "correct",
+              "expected": "Contact.Id",
+              "proposed": "Contact.Id",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.account_external_id",
+              "outcome": "correct",
+              "expected": "Contact.AccountId",
+              "proposed": "Contact.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.first_name",
+              "outcome": "correct",
+              "expected": "Contact.FirstName",
+              "proposed": "Contact.FirstName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.last_name",
+              "outcome": "correct",
+              "expected": "Contact.LastName",
+              "proposed": "Contact.LastName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.email",
+              "outcome": "correct",
+              "expected": "Contact.Email",
+              "proposed": "Contact.Email",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.phone",
+              "outcome": "correct",
+              "expected": "Contact.MobilePhone",
+              "proposed": "Contact.MobilePhone",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.role",
+              "outcome": "correct",
+              "expected": "Contact.Buying_Role__c",
+              "proposed": "Contact.Buying_Role__c",
+              "must_ask": false
+            },
+            {
+              "target": "deals.external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.Id",
+              "proposed": "Opportunity.Id",
+              "must_ask": false
+            },
+            {
+              "target": "deals.account_external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.AccountId",
+              "proposed": "Opportunity.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "deals.name",
+              "outcome": "correct",
+              "expected": "Opportunity.Name",
+              "proposed": "Opportunity.Name",
+              "must_ask": false
+            },
+            {
+              "target": "deals.amount",
+              "outcome": "correct",
+              "expected": "Opportunity.Amount",
+              "proposed": "Opportunity.Amount",
+              "must_ask": false
+            },
+            {
+              "target": "deals.currency",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "deals.stage",
+              "outcome": "correct",
+              "expected": "Opportunity.StageName",
+              "proposed": "Opportunity.StageName",
+              "must_ask": false
+            },
+            {
+              "target": "deals.close_date",
+              "outcome": "correct",
+              "expected": "Opportunity.CloseDate",
+              "proposed": "Opportunity.CloseDate",
+              "must_ask": false
+            },
+            {
+              "target": "deals.owner_email",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.external_id",
+              "outcome": "correct",
+              "expected": "Task.Id",
+              "proposed": "Task.Id",
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_type",
+              "outcome": "correct",
+              "expected": "Task.WhatId",
+              "proposed": "Task.WhatId",
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_external_id",
+              "outcome": "correct",
+              "expected": "Task.WhatId",
+              "proposed": "Task.WhatId",
+              "must_ask": false
+            },
+            {
+              "target": "activities.kind",
+              "outcome": "correct",
+              "expected": "Task.Type",
+              "proposed": "Task.Type",
+              "must_ask": false
+            },
+            {
+              "target": "activities.subject",
+              "outcome": "correct",
+              "expected": "Task.Subject",
+              "proposed": "Task.Subject",
+              "must_ask": false
+            },
+            {
+              "target": "activities.occurred_at",
+              "outcome": "correct",
+              "expected": "Task.ActivityDate",
+              "proposed": "Task.ActivityDate",
+              "must_ask": false
+            },
+            {
+              "target": "activities.notes",
+              "outcome": "correct",
+              "expected": "Task.Description",
+              "proposed": "Task.Description",
+              "must_ask": false
+            }
+          ],
+          "turns": 21,
+          "seconds": 54.4,
+          "cost_usd": 0.2132913,
+          "tool_calls": 20,
+          "is_error": false,
+          "proposals": {
+            "accounts.customer_since": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account"
+              ],
+              "question_for_admin": null,
+              "reason": "No customer-since or date field readable on Account. Optional, left unmapped.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": null,
+              "target": "accounts.customer_since"
+            },
+            "accounts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Id",
+              "target": "accounts.external_id"
+            },
+            "accounts.industry": {
+              "confidence": "medium",
+              "evidence": [
+                "sample:Account#1-40",
+                "describe:Account.Industry",
+                "describe:Account.Vertical__c"
+              ],
+              "question_for_admin": null,
+              "reason": "Standard Industry is null on all 40 sampled accounts; the custom Vertical__c holds industry values (Technology, Healthcare, Retail, Energy, etc.) matching the Industry picklist.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Vertical__c",
+              "target": "accounts.industry"
+            },
+            "accounts.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Name",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Account name, required, string.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Name",
+              "target": "accounts.name"
+            },
+            "accounts.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Owner_Email__c",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Email field labelled Owner Email. Billing_Email__c is a different contact.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Owner_Email__c",
+              "target": "accounts.owner_email"
+            },
+            "accounts.tier": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Plan__c",
+                "describe:Account.Tier__c",
+                "sample:Account#1-40",
+                "rule_test:40/40 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Plan__c (Enterprise/Standard/Free) matches target enum. Tier__c is a support level (24x7/Business Hours/None), not a customer tier.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Enterprise": "enterprise",
+                    "Free": "free",
+                    "Standard": "standard"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Account.Plan__c",
+              "target": "accounts.tier"
+            },
+            "accounts.website": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Website",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "URL field matches.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Website",
+              "target": "accounts.website"
+            },
+            "activities.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.Id",
+              "target": "activities.external_id"
+            },
+            "activities.kind": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Task.Type",
+                "sample:Task#1-50",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Call/Email/Meeting map directly; 'Other' mapped to 'task', the only generic target value.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Call": "call",
+                    "Email": "email",
+                    "Meeting": "meeting",
+                    "Other": "task"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Task.Type",
+              "target": "activities.kind"
+            },
+            "activities.notes": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Description"
+              ],
+              "question_for_admin": null,
+              "reason": "Comments text.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.Description",
+              "target": "activities.notes"
+            },
+            "activities.occurred_at": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Task.ActivityDate",
+                "sample:Task#1-50",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": "Task has no completion timestamp; ActivityDate is a due date, and some tasks are Not Started. Is it acceptable to use ActivityDate as occurred_at for all tasks, or should Not Started tasks be excluded?",
+              "reason": "Only date on Task is ActivityDate (due date, date-only); cast to midnight UTC. Many tasks are 'Not Started', so this may be a due date rather than when it occurred.",
+              "rule": [
+                {
+                  "op": "cast",
+                  "to": "timestamp"
+                }
+              ],
+              "source": "Task.ActivityDate",
+              "target": "activities.occurred_at"
+            },
+            "activities.related_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.WhatId"
+              ],
+              "question_for_admin": null,
+              "reason": "WhatId is the related Account or Opportunity Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.WhatId",
+              "target": "activities.related_external_id"
+            },
+            "activities.related_type": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.WhatId",
+                "sample:Task#1-50",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Derived from Id prefix: 001 account, 006 opportunity/deal. All sampled WhatIds are one of these.",
+              "rule": [
+                {
+                  "op": "lookup",
+                  "prefix_length": 3,
+                  "table": {
+                    "001": "account",
+                    "006": "deal"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Task.WhatId",
+              "target": "activities.related_type"
+            },
+            "activities.subject": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Subject",
+                "sample:Task#1-50"
+              ],
+              "question_for_admin": "Subject is required in the target but optional in Salesforce. If any of the 150 tasks have no subject, should they be skipped or given a placeholder?",
+              "reason": "Subject text. Optional in Salesforce though required in target; all sampled populated.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Task.Subject",
+              "target": "activities.subject"
+            },
+            "contacts.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.AccountId",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account Id, which is accounts.external_id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.AccountId",
+              "target": "contacts.account_external_id"
+            },
+            "contacts.email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Email",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": "Email is required in the target but optional in Salesforce. Contacts with no email cannot load. Should they be skipped, or given a placeholder?",
+              "reason": "Email field. Required in target but optional in Salesforce; all 50 sampled have a value, but the other 70 contacts are unseen.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Contact.Email",
+              "target": "contacts.email"
+            },
+            "contacts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.Id",
+              "target": "contacts.external_id"
+            },
+            "contacts.first_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.FirstName"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Contact.FirstName",
+              "target": "contacts.first_name"
+            },
+            "contacts.last_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.LastName"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match, required in source.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Contact.LastName",
+              "target": "contacts.last_name"
+            },
+            "contacts.phone": {
+              "confidence": "medium",
+              "evidence": [
+                "sample:Contact#1-50",
+                "describe:Contact.Phone",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "MobilePhone holds full 10-digit US numbers that normalize to E.164 (50/50). Business Phone (Phone) looks like a short extension (shape 'x9999') and cannot be a valid number.",
+              "rule": [
+                {
+                  "default_country_code": "1",
+                  "op": "normalize_phone"
+                }
+              ],
+              "source": "Contact.MobilePhone",
+              "target": "contacts.phone"
+            },
+            "contacts.role": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Buying_Role__c",
+                "describe:Contact.Role__c",
+                "sample:Contact#1-50",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Buying_Role__c holds buying-relationship role matching the target enum. Role__c holds job functions (Finance, Legal...), i.e. job title, which the target excludes.",
+              "rule": [
+                {
+                  "case_insensitive": true,
+                  "op": "map_values",
+                  "table": {
+                    "Billing": "billing",
+                    "Champion": "champion",
+                    "Decision Maker": "decision_maker",
+                    "Technical": "technical"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Contact.Buying_Role__c",
+              "target": "contacts.role"
+            },
+            "deals.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.AccountId"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.AccountId",
+              "target": "deals.account_external_id"
+            },
+            "deals.amount": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Amount",
+                "sample:Opportunity#1-50"
+              ],
+              "question_for_admin": "Amount is required in the target but optional in Salesforce. If any of the 80 opportunities have no Amount, should they be skipped or loaded with 0?",
+              "reason": "Currency field; all 50 sampled populated. Amount is optional in Salesforce though required in target.",
+              "rule": [
+                {
+                  "op": "cast",
+                  "to": "number"
+                }
+              ],
+              "source": "Opportunity.Amount",
+              "target": "deals.amount"
+            },
+            "deals.close_date": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.CloseDate"
+              ],
+              "question_for_admin": null,
+              "reason": "Date field matches.",
+              "rule": [
+                {
+                  "op": "cast",
+                  "to": "date"
+                }
+              ],
+              "source": "Opportunity.CloseDate",
+              "target": "deals.close_date"
+            },
+            "deals.currency": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "No currency field in the org (no CurrencyIsoCode readable); target default is USD.",
+              "rule": [
+                {
+                  "op": "default",
+                  "value": "USD"
+                }
+              ],
+              "source": null,
+              "target": "deals.currency"
+            },
+            "deals.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.Id",
+              "target": "deals.external_id"
+            },
+            "deals.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Name"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Opportunity.Name",
+              "target": "deals.name"
+            },
+            "deals.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "No owner email readable on Opportunity. Optional, left unmapped.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": null,
+              "target": "deals.owner_email"
+            },
+            "deals.stage": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.StageName",
+                "describe:Opportunity.Stage__c",
+                "sample:Opportunity#1-50",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Standard stage picklist maps one-to-one. Stage__c holds forecast categories (Commit/Pipeline/Best Case/Omitted), not stages.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Closed Lost": "closed_lost",
+                    "Closed Won": "closed_won",
+                    "Negotiation/Review": "negotiation",
+                    "Proposal/Price Quote": "proposal",
+                    "Prospecting": "lead",
+                    "Qualification": "qualified"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Opportunity.StageName",
+              "target": "deals.stage"
+            }
+          }
+        },
+        {
+          "org": "org_f",
+          "total": 29,
+          "accuracy": 1.0,
+          "counts": {
+            "correct": 29,
+            "should_have_asked": 0,
+            "wrong_source": 0,
+            "missed": 0,
+            "invented": 0
+          },
+          "questions_asked": 1,
+          "questions_required": 0,
+          "extra_questions": [],
+          "fields": [
+            {
+              "target": "accounts.external_id",
+              "outcome": "correct",
+              "expected": "Account.Id",
+              "proposed": "Account.Id",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.name",
+              "outcome": "correct",
+              "expected": "Account.Name",
+              "proposed": "Account.Name",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.industry",
+              "outcome": "correct",
+              "expected": "Account.Vertical__c",
+              "proposed": "Account.Vertical__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.tier",
+              "outcome": "correct",
+              "expected": "Account.Plan__c",
+              "proposed": "Account.Plan__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.website",
+              "outcome": "correct",
+              "expected": "Account.Website",
+              "proposed": "Account.Website",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.customer_since",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "accounts.owner_email",
+              "outcome": "correct",
+              "expected": "Account.Owner_Email__c",
+              "proposed": "Account.Owner_Email__c",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.external_id",
+              "outcome": "correct",
+              "expected": "Contact.Id",
+              "proposed": "Contact.Id",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.account_external_id",
+              "outcome": "correct",
+              "expected": "Contact.AccountId",
+              "proposed": "Contact.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.first_name",
+              "outcome": "correct",
+              "expected": "Contact.FirstName",
+              "proposed": "Contact.FirstName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.last_name",
+              "outcome": "correct",
+              "expected": "Contact.LastName",
+              "proposed": "Contact.LastName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.email",
+              "outcome": "correct",
+              "expected": "Contact.Email",
+              "proposed": "Contact.Email",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.phone",
+              "outcome": "correct",
+              "expected": "Contact.MobilePhone",
+              "proposed": "Contact.MobilePhone",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.role",
+              "outcome": "correct",
+              "expected": "Contact.Buying_Role__c",
+              "proposed": "Contact.Buying_Role__c",
+              "must_ask": false
+            },
+            {
+              "target": "deals.external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.Id",
+              "proposed": "Opportunity.Id",
+              "must_ask": false
+            },
+            {
+              "target": "deals.account_external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.AccountId",
+              "proposed": "Opportunity.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "deals.name",
+              "outcome": "correct",
+              "expected": "Opportunity.Name",
+              "proposed": "Opportunity.Name",
+              "must_ask": false
+            },
+            {
+              "target": "deals.amount",
+              "outcome": "correct",
+              "expected": "Opportunity.Amount",
+              "proposed": "Opportunity.Amount",
+              "must_ask": false
+            },
+            {
+              "target": "deals.currency",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "deals.stage",
+              "outcome": "correct",
+              "expected": "Opportunity.StageName",
+              "proposed": "Opportunity.StageName",
+              "must_ask": false
+            },
+            {
+              "target": "deals.close_date",
+              "outcome": "correct",
+              "expected": "Opportunity.CloseDate",
+              "proposed": "Opportunity.CloseDate",
+              "must_ask": false
+            },
+            {
+              "target": "deals.owner_email",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.external_id",
+              "outcome": "correct",
+              "expected": "Task.Id",
+              "proposed": "Task.Id",
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_type",
+              "outcome": "correct",
+              "expected": "Task.WhatId",
+              "proposed": "Task.WhatId",
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_external_id",
+              "outcome": "correct",
+              "expected": "Task.WhatId",
+              "proposed": "Task.WhatId",
+              "must_ask": false
+            },
+            {
+              "target": "activities.kind",
+              "outcome": "correct",
+              "expected": "Task.Type",
+              "proposed": "Task.Type",
+              "must_ask": false
+            },
+            {
+              "target": "activities.subject",
+              "outcome": "correct",
+              "expected": "Task.Subject",
+              "proposed": "Task.Subject",
+              "must_ask": false
+            },
+            {
+              "target": "activities.occurred_at",
+              "outcome": "correct",
+              "expected": "Task.ActivityDate",
+              "proposed": "Task.ActivityDate",
+              "must_ask": false
+            },
+            {
+              "target": "activities.notes",
+              "outcome": "correct",
+              "expected": "Task.Description",
+              "proposed": "Task.Description",
+              "must_ask": false
+            }
+          ],
+          "turns": 21,
+          "seconds": 51.4,
+          "cost_usd": 0.1995846,
+          "tool_calls": 20,
+          "is_error": false,
+          "proposals": {
+            "accounts.customer_since": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account"
+              ],
+              "question_for_admin": null,
+              "reason": "No customer-since or account start date field exists on Account in the readable org. Optional, left unmapped.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": null,
+              "target": "accounts.customer_since"
+            },
+            "accounts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Account.Id",
+              "target": "accounts.external_id"
+            },
+            "accounts.industry": {
+              "confidence": "medium",
+              "evidence": [
+                "sample:Account#1-40",
+                "describe:Account.Industry",
+                "describe:Account.Vertical__c"
+              ],
+              "question_for_admin": null,
+              "reason": "Standard Industry is null in all 40 sampled accounts; custom Vertical__c holds the same industry values (Technology, Healthcare, Energy, Retail, Manufacturing, Financial Services) on every record.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Vertical__c",
+              "target": "accounts.industry"
+            },
+            "accounts.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Name",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Required account name, string.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Name",
+              "target": "accounts.name"
+            },
+            "accounts.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Owner_Email__c",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Custom owner email field, email type.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Owner_Email__c",
+              "target": "accounts.owner_email"
+            },
+            "accounts.tier": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Plan__c",
+                "describe:Account.Tier__c",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Plan__c (Enterprise/Standard/Free) matches target enum tier. Tier__c is a support level (24x7/Business Hours/None), not a plan, so not used. 40/40 pass.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Enterprise": "enterprise",
+                    "Free": "free",
+                    "Standard": "standard"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Account.Plan__c",
+              "target": "accounts.tier"
+            },
+            "accounts.website": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Website",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "URL field maps directly.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Website",
+              "target": "accounts.website"
+            },
+            "activities.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.Id",
+              "target": "activities.external_id"
+            },
+            "activities.kind": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Task.Type",
+                "rule_test:Task.Type"
+              ],
+              "question_for_admin": null,
+              "reason": "Call/Email/Meeting map directly; 'Other' has no equivalent and is mapped to the generic 'task'.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Call": "call",
+                    "Email": "email",
+                    "Meeting": "meeting",
+                    "Other": "task"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Task.Type",
+              "target": "activities.kind"
+            },
+            "activities.notes": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Description"
+              ],
+              "question_for_admin": null,
+              "reason": "Comments textarea maps to free-text notes.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.Description",
+              "target": "activities.notes"
+            },
+            "activities.occurred_at": {
+              "confidence": "low",
+              "evidence": [
+                "describe:Task.ActivityDate",
+                "sample:Task#1-50",
+                "rule_test:Task.ActivityDate"
+              ],
+              "question_for_admin": "Task has no completed or created date readable, only the due date ActivityDate. Is it acceptable to use the due date (midnight UTC) as occurred_at, including for 'Not Started' tasks, or should those be excluded or handled differently? Also, can a CreatedDate/LastModifiedDate field be exposed?",
+              "reason": "The only date on Task is ActivityDate, a due date (date only, no time). Many tasks are 'Not Started', so it may not be when the interaction occurred. Casting to timestamp gives midnight UTC.",
+              "rule": [
+                {
+                  "op": "cast",
+                  "to": "timestamp"
+                }
+              ],
+              "source": "Task.ActivityDate",
+              "target": "activities.occurred_at"
+            },
+            "activities.related_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.WhatId",
+                "sample:Task#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "WhatId is the Id of the Account or Opportunity. WhatId is optional in Salesforce, so tasks without it can't load.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Task.WhatId",
+              "target": "activities.related_external_id"
+            },
+            "activities.related_type": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.WhatId",
+                "rule_test:Task.WhatId"
+              ],
+              "question_for_admin": null,
+              "reason": "Derived from Id prefix: 001 = account, 006 = deal. 50/50 sampled pass.",
+              "rule": [
+                {
+                  "op": "lookup",
+                  "prefix_length": 3,
+                  "table": {
+                    "001": "account",
+                    "006": "deal"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Task.WhatId",
+              "target": "activities.related_type"
+            },
+            "activities.subject": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Subject",
+                "sample:Task#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match. Subject is optional in Salesforce but required in target; sampled values all present.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Task.Subject",
+              "target": "activities.subject"
+            },
+            "contacts.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.AccountId",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account Id, which is used as accounts.external_id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.AccountId",
+              "target": "contacts.account_external_id"
+            },
+            "contacts.email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Email",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Email field; populated in all sampled contacts. Required in target but optional in Salesforce, so records with a blank email may fail on full load.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Contact.Email",
+              "target": "contacts.email"
+            },
+            "contacts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Contact.Id",
+              "target": "contacts.external_id"
+            },
+            "contacts.first_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.FirstName"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Contact.FirstName",
+              "target": "contacts.first_name"
+            },
+            "contacts.last_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.LastName"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match, required in both.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Contact.LastName",
+              "target": "contacts.last_name"
+            },
+            "contacts.phone": {
+              "confidence": "medium",
+              "evidence": [
+                "sample:Contact#1-50",
+                "rule_test:Contact.MobilePhone"
+              ],
+              "question_for_admin": null,
+              "reason": "MobilePhone holds full-format numbers like (999) 999-9999 that normalize to E.164 (50/50 pass). The standard Phone (Business Phone) field holds only short values shaped like 'x9999' (looks like extensions), which cannot form a valid number.",
+              "rule": [
+                {
+                  "default_country_code": "1",
+                  "op": "normalize_phone"
+                }
+              ],
+              "source": "Contact.MobilePhone",
+              "target": "contacts.phone"
+            },
+            "contacts.role": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Buying_Role__c",
+                "sample:Contact#1-50",
+                "rule_test:Contact.Buying_Role__c"
+              ],
+              "question_for_admin": null,
+              "reason": "Buying_Role__c is the buying-relationship role and maps to the enum. Role__c holds job functions (Finance, Legal, Engineering...), which the target note excludes. 50/50 pass.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Billing": "billing",
+                    "Champion": "champion",
+                    "Decision Maker": "decision_maker",
+                    "Technical": "technical"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Contact.Buying_Role__c",
+              "target": "contacts.role"
+            },
+            "deals.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.AccountId"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.AccountId",
+              "target": "deals.account_external_id"
+            },
+            "deals.amount": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Amount",
+                "sample:Opportunity#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Currency amount, populated in all sampled records. Amount is optional in Salesforce but required in target.",
+              "rule": [
+                {
+                  "op": "cast",
+                  "to": "number"
+                }
+              ],
+              "source": "Opportunity.Amount",
+              "target": "deals.amount"
+            },
+            "deals.close_date": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.CloseDate"
+              ],
+              "question_for_admin": null,
+              "reason": "Date to date.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.CloseDate",
+              "target": "deals.close_date"
+            },
+            "deals.currency": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "No currency field on Opportunity (no multi-currency field readable); the target default is USD.",
+              "rule": [
+                {
+                  "op": "default",
+                  "value": "USD"
+                }
+              ],
+              "source": null,
+              "target": "deals.currency"
+            },
+            "deals.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": "Opportunity.Id",
+              "target": "deals.external_id"
+            },
+            "deals.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Name"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Opportunity.Name",
+              "target": "deals.name"
+            },
+            "deals.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "Opportunity has no owner email field readable; Owner_Email__c exists only on Account. Optional, left unmapped.",
+              "rule": [
+                {
+                  "op": "copy"
+                }
+              ],
+              "source": null,
+              "target": "deals.owner_email"
+            },
+            "deals.stage": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.StageName",
+                "sample:Opportunity#1-50",
+                "rule_test:Opportunity.StageName"
+              ],
+              "question_for_admin": null,
+              "reason": "Standard stage picklist maps one-to-one to the target enum. Stage__c holds forecast categories (Commit, Pipeline, Best Case, Omitted), not stage.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Closed Lost": "closed_lost",
+                    "Closed Won": "closed_won",
+                    "Negotiation/Review": "negotiation",
+                    "Proposal/Price Quote": "proposal",
+                    "Prospecting": "lead",
+                    "Qualification": "qualified"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Opportunity.StageName",
+              "target": "deals.stage"
+            }
+          }
+        },
+        {
+          "org": "org_f",
+          "total": 29,
+          "accuracy": 1.0,
+          "counts": {
+            "correct": 29,
+            "should_have_asked": 0,
+            "wrong_source": 0,
+            "missed": 0,
+            "invented": 0
+          },
+          "questions_asked": 3,
+          "questions_required": 0,
+          "extra_questions": [
+            "activities.subject",
+            "deals.amount"
+          ],
+          "fields": [
+            {
+              "target": "accounts.external_id",
+              "outcome": "correct",
+              "expected": "Account.Id",
+              "proposed": "Account.Id",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.name",
+              "outcome": "correct",
+              "expected": "Account.Name",
+              "proposed": "Account.Name",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.industry",
+              "outcome": "correct",
+              "expected": "Account.Vertical__c",
+              "proposed": "Account.Vertical__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.tier",
+              "outcome": "correct",
+              "expected": "Account.Plan__c",
+              "proposed": "Account.Plan__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.website",
+              "outcome": "correct",
+              "expected": "Account.Website",
+              "proposed": "Account.Website",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.customer_since",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "accounts.owner_email",
+              "outcome": "correct",
+              "expected": "Account.Owner_Email__c",
+              "proposed": "Account.Owner_Email__c",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.external_id",
+              "outcome": "correct",
+              "expected": "Contact.Id",
+              "proposed": "Contact.Id",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.account_external_id",
+              "outcome": "correct",
+              "expected": "Contact.AccountId",
+              "proposed": "Contact.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.first_name",
+              "outcome": "correct",
+              "expected": "Contact.FirstName",
+              "proposed": "Contact.FirstName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.last_name",
+              "outcome": "correct",
+              "expected": "Contact.LastName",
+              "proposed": "Contact.LastName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.email",
+              "outcome": "correct",
+              "expected": "Contact.Email",
+              "proposed": "Contact.Email",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.phone",
+              "outcome": "correct",
+              "expected": "Contact.MobilePhone",
+              "proposed": "Contact.MobilePhone",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.role",
+              "outcome": "correct",
+              "expected": "Contact.Buying_Role__c",
+              "proposed": "Contact.Buying_Role__c",
+              "must_ask": false
+            },
+            {
+              "target": "deals.external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.Id",
+              "proposed": "Opportunity.Id",
+              "must_ask": false
+            },
+            {
+              "target": "deals.account_external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.AccountId",
+              "proposed": "Opportunity.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "deals.name",
+              "outcome": "correct",
+              "expected": "Opportunity.Name",
+              "proposed": "Opportunity.Name",
+              "must_ask": false
+            },
+            {
+              "target": "deals.amount",
+              "outcome": "correct",
+              "expected": "Opportunity.Amount",
+              "proposed": "Opportunity.Amount",
+              "must_ask": false
+            },
+            {
+              "target": "deals.currency",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "deals.stage",
+              "outcome": "correct",
+              "expected": "Opportunity.StageName",
+              "proposed": "Opportunity.StageName",
+              "must_ask": false
+            },
+            {
+              "target": "deals.close_date",
+              "outcome": "correct",
+              "expected": "Opportunity.CloseDate",
+              "proposed": "Opportunity.CloseDate",
+              "must_ask": false
+            },
+            {
+              "target": "deals.owner_email",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.external_id",
+              "outcome": "correct",
+              "expected": "Task.Id",
+              "proposed": "Task.Id",
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_type",
+              "outcome": "correct",
+              "expected": "Task.WhatId",
+              "proposed": "Task.WhatId",
+              "must_ask": false
+            },
+            {
+              "target": "activities.related_external_id",
+              "outcome": "correct",
+              "expected": "Task.WhatId",
+              "proposed": "Task.WhatId",
+              "must_ask": false
+            },
+            {
+              "target": "activities.kind",
+              "outcome": "correct",
+              "expected": "Task.Type",
+              "proposed": "Task.Type",
+              "must_ask": false
+            },
+            {
+              "target": "activities.subject",
+              "outcome": "correct",
+              "expected": "Task.Subject",
+              "proposed": "Task.Subject",
+              "must_ask": false
+            },
+            {
+              "target": "activities.occurred_at",
+              "outcome": "correct",
+              "expected": "Task.ActivityDate",
+              "proposed": "Task.ActivityDate",
+              "must_ask": false
+            },
+            {
+              "target": "activities.notes",
+              "outcome": "correct",
+              "expected": "Task.Description",
+              "proposed": "Task.Description",
+              "must_ask": false
+            }
+          ],
+          "turns": 21,
+          "seconds": 47.8,
+          "cost_usd": 0.18350049999999998,
+          "tool_calls": 20,
+          "is_error": false,
+          "proposals": {
+            "accounts.customer_since": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account"
+              ],
+              "question_for_admin": null,
+              "reason": "Optional; no customer-since or start date field exists on Account in this org. Left unmapped.",
+              "rule": [],
+              "source": null,
+              "target": "accounts.customer_since"
+            },
+            "accounts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [],
+              "source": "Account.Id",
+              "target": "accounts.external_id"
+            },
+            "accounts.industry": {
+              "confidence": "medium",
+              "evidence": [
+                "sample:Account#1-40",
+                "describe:Account.Industry",
+                "describe:Account.Vertical__c"
+              ],
+              "question_for_admin": null,
+              "reason": "Standard Industry is empty in all 40 sampled accounts; the custom Vertical__c holds industry values (Technology, Healthcare, Energy, etc.) that match the Industry picklist.",
+              "rule": [
+                {
+                  "op": "trim"
+                }
+              ],
+              "source": "Account.Vertical__c",
+              "target": "accounts.industry"
+            },
+            "accounts.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Name",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Required name, string.",
+              "rule": [],
+              "source": "Account.Name",
+              "target": "accounts.name"
+            },
+            "accounts.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Owner_Email__c",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Custom owner email field (email type). Billing_Email__c is a different contact.",
+              "rule": [],
+              "source": "Account.Owner_Email__c",
+              "target": "accounts.owner_email"
+            },
+            "accounts.tier": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Plan__c",
+                "describe:Account.Tier__c",
+                "sample:Account#1-40",
+                "rule_test:40/40 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Plan__c values Enterprise/Standard/Free match the target tiers; 40/40 tested. Tier__c (24x7/Business Hours/None) is a support level, not a plan tier.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Enterprise": "enterprise",
+                    "Free": "free",
+                    "Standard": "standard"
+                  },
+                  "unmapped": "null"
+                }
+              ],
+              "source": "Account.Plan__c",
+              "target": "accounts.tier"
+            },
+            "accounts.website": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Website"
+              ],
+              "question_for_admin": null,
+              "reason": "Website URL field.",
+              "rule": [],
+              "source": "Account.Website",
+              "target": "accounts.website"
+            },
+            "activities.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [],
+              "source": "Task.Id",
+              "target": "activities.external_id"
+            },
+            "activities.kind": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Task.Type",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Call, Email and Meeting map directly. Other maps to task, the closest target value; 50/50 tested.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Call": "call",
+                    "Email": "email",
+                    "Meeting": "meeting",
+                    "Other": "task"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Task.Type",
+              "target": "activities.kind"
+            },
+            "activities.notes": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.Description"
+              ],
+              "question_for_admin": null,
+              "reason": "Comments text.",
+              "rule": [],
+              "source": "Task.Description",
+              "target": "activities.notes"
+            },
+            "activities.occurred_at": {
+              "confidence": "low",
+              "evidence": [
+                "describe:Task.ActivityDate",
+                "sample:Task#1-50",
+                "rule_test"
+              ],
+              "question_for_admin": "Task has no completed or created timestamp readable, only the due date ActivityDate. Is it acceptable to use it as occurred_at, and what should happen to tasks with no date?",
+              "reason": "The only date on Task is ActivityDate, the due date. Many tasks are Not Started, so it may not be when the interaction happened. It is date-only, so it becomes midnight UTC. Records with no ActivityDate would fail.",
+              "rule": [
+                {
+                  "op": "cast",
+                  "to": "timestamp"
+                }
+              ],
+              "source": "Task.ActivityDate",
+              "target": "activities.occurred_at"
+            },
+            "activities.related_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Task.WhatId"
+              ],
+              "question_for_admin": null,
+              "reason": "WhatId is the Account or Opportunity Id.",
+              "rule": [],
+              "source": "Task.WhatId",
+              "target": "activities.related_external_id"
+            },
+            "activities.related_type": {
+              "confidence": "high",
+              "evidence": [
+                "sample:Task#1-50",
+                "rule_test"
+              ],
+              "question_for_admin": null,
+              "reason": "Id prefix 001 is Account and 006 is Opportunity; tested 50/50.",
+              "rule": [
+                {
+                  "op": "lookup",
+                  "prefix_length": 3,
+                  "table": {
+                    "001": "account",
+                    "006": "deal"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Task.WhatId",
+              "target": "activities.related_type"
+            },
+            "activities.subject": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Task.Subject",
+                "sample:Task#1-50"
+              ],
+              "question_for_admin": "Task.Subject is optional in Salesforce but required in the target. If any of the 150 tasks have no subject, should they be skipped or given a placeholder?",
+              "reason": "Subject is optional in Salesforce but required in the target. All sampled tasks have one.",
+              "rule": [],
+              "source": "Task.Subject",
+              "target": "activities.subject"
+            },
+            "contacts.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.AccountId",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account Id, which is the accounts external_id.",
+              "rule": [],
+              "source": "Contact.AccountId",
+              "target": "contacts.account_external_id"
+            },
+            "contacts.email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Email",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Email field; present on all 50 sampled contacts. Only 50 of 120 were visible, so some may be blank.",
+              "rule": [],
+              "source": "Contact.Email",
+              "target": "contacts.email"
+            },
+            "contacts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [],
+              "source": "Contact.Id",
+              "target": "contacts.external_id"
+            },
+            "contacts.first_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.FirstName"
+              ],
+              "question_for_admin": null,
+              "reason": "First name.",
+              "rule": [],
+              "source": "Contact.FirstName",
+              "target": "contacts.first_name"
+            },
+            "contacts.last_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.LastName"
+              ],
+              "question_for_admin": null,
+              "reason": "Required last name.",
+              "rule": [],
+              "source": "Contact.LastName",
+              "target": "contacts.last_name"
+            },
+            "contacts.phone": {
+              "confidence": "medium",
+              "evidence": [
+                "sample:Contact#1-50",
+                "describe:Contact.Phone",
+                "describe:Contact.MobilePhone"
+              ],
+              "question_for_admin": null,
+              "reason": "MobilePhone holds full 10-digit numbers that normalize to E.164. Phone (Business Phone) has a 5-character shape like an extension, so it can't give a usable number. The default country code 1 is assumed from the (999) 999-9999 format.",
+              "rule": [
+                {
+                  "default_country_code": "1",
+                  "op": "normalize_phone"
+                }
+              ],
+              "source": "Contact.MobilePhone",
+              "target": "contacts.phone"
+            },
+            "contacts.role": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Buying_Role__c",
+                "sample:Contact#1-50",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Buying role (Decision Maker/Champion/Billing/Technical) matches the target's buying-relationship role; 50/50 tested. Role__c holds job functions (Finance, Legal, etc.), which the target excludes. Blank values become null.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Billing": "billing",
+                    "Champion": "champion",
+                    "Decision Maker": "decision_maker",
+                    "Technical": "technical"
+                  },
+                  "unmapped": "null"
+                }
+              ],
+              "source": "Contact.Buying_Role__c",
+              "target": "contacts.role"
+            },
+            "deals.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.AccountId"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account.",
+              "rule": [],
+              "source": "Opportunity.AccountId",
+              "target": "deals.account_external_id"
+            },
+            "deals.amount": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity.Amount",
+                "sample:Opportunity#1-50"
+              ],
+              "question_for_admin": "Opportunity.Amount is optional in Salesforce but required in the target. If some opportunities have no Amount, should they be skipped, loaded with 0, or fixed in Salesforce first?",
+              "reason": "Currency amount, present on all 50 sampled. Amount is not required in Salesforce but is required in the target, so records with a blank Amount in the other 30 would fail.",
+              "rule": [],
+              "source": "Opportunity.Amount",
+              "target": "deals.amount"
+            },
+            "deals.close_date": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.CloseDate"
+              ],
+              "question_for_admin": null,
+              "reason": "Date field.",
+              "rule": [],
+              "source": "Opportunity.CloseDate",
+              "target": "deals.close_date"
+            },
+            "deals.currency": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "No currency field is readable on Opportunity (no CurrencyIsoCode), so use the target default USD.",
+              "rule": [
+                {
+                  "op": "default",
+                  "value": "USD"
+                }
+              ],
+              "source": null,
+              "target": "deals.currency"
+            },
+            "deals.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [],
+              "source": "Opportunity.Id",
+              "target": "deals.external_id"
+            },
+            "deals.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Name"
+              ],
+              "question_for_admin": null,
+              "reason": "Required name.",
+              "rule": [],
+              "source": "Opportunity.Name",
+              "target": "deals.name"
+            },
+            "deals.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "Optional; Opportunity has no owner email field in this org. Left unmapped.",
+              "rule": [],
+              "source": null,
+              "target": "deals.owner_email"
+            },
+            "deals.stage": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.StageName",
+                "sample:Opportunity#1-50",
+                "rule_test:50/50 ok"
+              ],
+              "question_for_admin": null,
+              "reason": "Standard stage picklist maps one-to-one to target stages. Stage__c holds forecast categories (Commit, Pipeline, Best Case, Omitted), not a stage.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Closed Lost": "closed_lost",
+                    "Closed Won": "closed_won",
+                    "Negotiation/Review": "negotiation",
+                    "Proposal/Price Quote": "proposal",
+                    "Prospecting": "lead",
+                    "Qualification": "qualified"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Opportunity.StageName",
+              "target": "deals.stage"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "mean_accuracy": 1.0
+}
