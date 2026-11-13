@@ -65,6 +65,9 @@ async def run(connection: str) -> int:
         max_turns=30,
     )
     prompt = f"Inspect the Salesforce org behind connection handle '{connection}' and report."
+    status = 0
+    # Read the stream to its end. Returning from inside the loop leaves the SDK's
+    # generator half-closed, which raises a RuntimeError when the event loop shuts down.
     async for message in query(prompt=prompt, options=options):
         if isinstance(message, AssistantMessage):
             for block in message.content:
@@ -80,8 +83,8 @@ async def run(connection: str) -> int:
                 + "]",
                 file=sys.stderr,
             )
-            return 1 if message.is_error else 0
-    return 0
+            status = 1 if message.is_error else 0
+    return status
 
 
 if __name__ == "__main__":
