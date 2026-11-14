@@ -69,3 +69,18 @@ def test_unknown_org_is_rejected(client):
 
 def test_healthz(client):
     assert client.get("/healthz").json() == {"status": "ok"}
+
+
+def test_data_dirs_resolve_from_env(monkeypatch):
+    """The deploy scenario: the package is installed away from the orgs/ and results/
+    folders, so they are located via FIRSTSYNC_ORGS_DIR and FIRSTSYNC_DEMO_RESULTS_DIR
+    (as the Dockerfile sets them). The index must still list every org."""
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    monkeypatch.setenv("FIRSTSYNC_ORGS_DIR", str(root / "orgs"))
+    monkeypatch.setenv("FIRSTSYNC_DEMO_RESULTS_DIR", str(root / "results"))
+    body = TestClient(app).get("/").text
+    for org in ("org_a", "org_b", "org_c", "org_d", "org_e", "org_f"):
+        assert org in body
+    assert "Claude's mapping ready" in body  # demo proposals located too
