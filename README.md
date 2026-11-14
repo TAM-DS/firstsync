@@ -15,10 +15,11 @@ plain language. Deterministic code decides what actually runs.
 > migration engine loads approved data idempotently; and a sync engine keeps the target
 > in step afterwards, adding and updating safely while reporting (never acting on) records
 > that regressed or vanished. A go-live report and a `trace` view over the audit log tie
-> it together. There is no tool by which the model approves, migrates, syncs, or deletes
-> anything. The held-out org scored [100% with perfectly calibrated
-> questions](#the-held-out-org-e). What remains is a hosted portal, not core logic. This
-> is a reference implementation with no customers. See
+> it together, and a [web portal](#the-portal) puts the whole flow in the browser. There
+> is no tool by which the model approves, migrates, syncs, or deletes anything. The
+> held-out org scored [100% with perfectly calibrated questions](#the-held-out-org-e).
+> What remains is deploying the portal to a public URL, not core logic. This is a
+> reference implementation with no customers. See
 > [What is and is not tested](#what-is-and-is-not-tested).
 
 ```mermaid
@@ -159,7 +160,7 @@ Pythons refuse installs outside one.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q                               # 214 tests, no network, no API key
+pytest -q                               # 220 tests, no network, no API key
 python scripts/run_eval.py --baseline   # the evaluation, with name matching instead of a model
 python -m firstsync.mcp_server          # the MCP server, over stdio
 ```
@@ -406,26 +407,55 @@ All six weeks are built and merged.
 | 3 | Dry-run engine, failure grouping, defect scoring | done |
 | 4 | Hash-bound approval gate, idempotent migration engine | done |
 | 5 | Sync engine, go-live report, audit-log trace | done |
-| 6 | Held-out run on org E, observability, this README | done |
+| 6 | Held-out run on org E, observability, the portal, this README | done |
 
-The one piece still ahead is a hosted portal, covered next.
+The core is complete; what is left is deploying the portal to a public URL.
+
+## The portal
+
+The portal is the human-facing half — where a person does the one thing the model cannot:
+authorize. It walks an administrator through the lifecycle in the browser: connect and see
+what the user can read, review Claude's proposed mappings (with the questions it raised),
+preview the dry-run of their own data, approve, migrate, and read the go-live report.
+
+It never calls the model. Every page reads state the engines wrote, and approve, migrate
+and sync are server-side calls behind the same gates the CLI uses. So the whole portal
+runs with no API key: for the demo it loads the proposals Claude produced in the
+evaluation runs — real model output, pre-computed — and the review, dry-run, approve and
+migrate steps downstream are genuine.
+
+```bash
+pip install -e ".[portal]"
+firstsync portal                     # http://localhost:8000
+```
+
+Built with FastAPI and server-rendered templates — no client-side framework, so the flow
+is a sequence of plain pages and the back button and refresh behave.
 
 ## Hosting
 
-There is nothing to host yet: FirstSync runs as a CLI and an MCP server, with SQLite as
-the target. The portal is the remaining piece, and the hosting choice follows from what
-this project is — a portfolio demo with bursty, near-zero traffic, not a product under
-steady multi-tenant load.
+The portal ships with a `Dockerfile` and a `fly.toml`, so a demo deploy is one command set:
 
-For the demo, the portal will run on a managed platform (Fly.io or Render) with serverless
-Postgres. Scale-to-zero fits bursty traffic: it costs almost nothing between visits and
-wakes on the first request, where an always-on service plus a managed database would bill
-around the clock to serve no one. The production path on AWS is App Runner (or ECS
-Fargate) behind the same audit and tenancy model, with Amazon RDS or Aurora Serverless for
-Postgres and row-level security per tenant — the right shape once there are real tenants
-and steady load, and the wrong shape, pure idle cost, for a demo. Right-sizing the host to
-the traffic is the decision; the production design is written down so the step up is a
-configuration change, not a rewrite.
+```bash
+fly launch --no-deploy   # pick an app name and region
+fly deploy
+```
+
+The hosting choice follows from what this project is — a portfolio demo with bursty,
+near-zero traffic, not a product under steady multi-tenant load. The `fly.toml` scales the
+machine to zero: it stops when idle and wakes on the first request, so it costs almost
+nothing between visits, where an always-on service plus a managed database would bill
+around the clock to serve no one. Render with a serverless Postgres add-on is the same
+trade in a different wrapper. The production path on AWS is App Runner (or ECS Fargate)
+behind the same audit and tenancy model, with Amazon RDS or Aurora Serverless for Postgres
+and row-level security per tenant — the right shape once there are real tenants and steady
+load, and the wrong shape, pure idle cost, for a demo. Right-sizing the host to the traffic
+is the decision; the production design is written down so the step up is a configuration
+change, not a rewrite.
+
+Demo state (the SQLite target, proposals, approvals) is ephemeral and resettable from the
+UI, so no volume is attached; point `FIRSTSYNC_STATE_DIR` at a mounted volume for durable
+state.
 
 ## Licence
 

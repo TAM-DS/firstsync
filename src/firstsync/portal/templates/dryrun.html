@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ connection }} dry-run — FirstSync{% endblock %}
+{% block body %}
+<h1>Dry-run preview — {{ connection }}</h1>
+<p class="lead">Every record built the way the migration would build it. Nothing is written.
+<span class="pill clean">clean</span> loads,
+<span class="pill warning">warning</span> loads without the warned value,
+<span class="pill needs_decision">needs decision</span> and
+<span class="pill blocking">blocking</span> are held back.</p>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Table</th><th>Records</th><th>Clean</th><th>Warning</th>
+      <th>Needs decision</th><th>Blocking</th></tr></thead>
+    <tbody>
+      {% for t in tables %}
+      <tr>
+        <td><strong>{{ t.table }}</strong>{% if t.not_runnable %}
+            <div class="muted">{{ t.not_runnable }}</div>{% endif %}</td>
+        <td>{{ t.records }}</td><td>{{ t.clean }}</td><td>{{ t.warning }}</td>
+        <td>{{ t.needs_decision }}</td><td>{{ t.blocking }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if groups %}
+<h2>What would not load, by cause</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Field</th><th>Reason</th><th></th><th>Records</th><th>Example</th></tr></thead>
+    <tbody>
+      {% for g in groups %}
+      <tr>
+        <td><code>{{ g.target }}</code></td>
+        <td>{{ g.reason }}</td>
+        <td><span class="pill {{ g.severity }}">{{ g.severity.replace('_',' ') }}</span></td>
+        <td>{{ g.count }}</td>
+        <td class="muted">{{ g.example_input }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if duplicates %}
+<h2>Likely duplicates</h2>
+<div class="card">
+  <p class="muted">Records that would collide on a table's natural key. Reported, not merged.</p>
+  <ul class="plain">
+    {% for d in duplicates %}
+    <li><strong>{{ d.table }}</strong> on {{ d.key|join(', ') }}: {{ d.record_ids|join(', ') }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="row">
+  {% if approved %}
+    <span class="pill clean">already approved</span>
+    <form method="post" action="/org/{{ connection }}/migrate" style="display:inline">
+      <button class="btn" type="submit">Migrate now</button></form>
+  {% else %}
+    <form method="post" action="/org/{{ connection }}/approve" style="display:inline">
+      <button class="btn" type="submit">Approve this mapping</button></form>
+  {% endif %}
+  <a class="btn secondary" href="/org/{{ connection }}">Back</a>
+</div>
+<p class="muted">Approving records a hash of these proposals. If the mapping changes
+afterwards, the migration refuses until you approve again.</p>
+{% endblock %}

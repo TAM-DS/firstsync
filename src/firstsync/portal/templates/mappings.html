@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ connection }} mappings — FirstSync{% endblock %}
+{% block body %}
+<h1>Proposed mappings — {{ connection }}</h1>
+<p class="lead">Each target field, where Claude proposes it comes from, and why. Fields with
+a question need your decision before approval.</p>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Target</th><th>Source</th><th>Conf.</th><th>Reason / question</th></tr></thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td><code>{{ r.target }}</code></td>
+        <td>{% if r.source %}<code>{{ r.source }}</code>{% else %}<span class="muted">— none —</span>{% endif %}</td>
+        <td>{{ r.confidence }}</td>
+        <td>
+          {{ r.reason }}
+          {% if r.question_for_admin %}
+          <div class="banner" style="margin-top:6px"><strong>Asks:</strong> {{ r.question_for_admin }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="row">
+  <a class="btn" href="/org/{{ connection }}/dryrun">Dry-run preview →</a>
+  <a class="btn secondary" href="/org/{{ connection }}">Back</a>
+</div>
+{% endblock %}
