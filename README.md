@@ -15,12 +15,12 @@ plain language. Deterministic code decides what actually runs.
 > migration engine loads approved data idempotently; and a sync engine keeps the target
 > in step afterwards, adding and updating safely while reporting (never acting on) records
 > that regressed or vanished. A go-live report and a `trace` view over the audit log tie
-> it together, and a [web portal](#the-portal) puts the whole flow in the browser. There
-> is no tool by which the model approves, migrates, syncs, or deletes anything. The
-> held-out org scored [100% with perfectly calibrated questions](#the-held-out-org-e).
-> What remains is deploying the portal to a public URL, not core logic. This is a
-> reference implementation with no customers. See
-> [What is and is not tested](#what-is-and-is-not-tested).
+> it together, and a [web portal](#the-portal) — live at
+> **[firstsync-demo.fly.dev](https://firstsync-demo.fly.dev)** — puts the whole flow in the
+> browser. There is no tool by which the model approves, migrates, syncs, or deletes
+> anything. The held-out org scored [100% with perfectly calibrated
+> questions](#the-held-out-org-e). This is a reference implementation with no customers.
+> See [What is and is not tested](#what-is-and-is-not-tested).
 
 ```mermaid
 flowchart LR
@@ -409,7 +409,8 @@ All six weeks are built and merged.
 | 5 | Sync engine, go-live report, audit-log trace | done |
 | 6 | Held-out run on org E, observability, the portal, this README | done |
 
-The core is complete; what is left is deploying the portal to a public URL.
+Complete and deployed — the portal is live at
+[firstsync-demo.fly.dev](https://firstsync-demo.fly.dev).
 
 ## The portal
 
@@ -418,11 +419,40 @@ authorize. It walks an administrator through the lifecycle in the browser: conne
 what the user can read, review Claude's proposed mappings (with the questions it raised),
 preview the dry-run of their own data, approve, migrate, and read the go-live report.
 
+**It is live:** [firstsync-demo.fly.dev](https://firstsync-demo.fly.dev) — click any org through the whole flow.
+
+![The portal's landing page: pick a customer org to onboard](docs/images/portal-orgs.png)
+
 It never calls the model. Every page reads state the engines wrote, and approve, migrate
 and sync are server-side calls behind the same gates the CLI uses. So the whole portal
 runs with no API key: for the demo it loads the proposals Claude produced in the
 evaluation runs — real model output, pre-computed — and the review, dry-run, approve and
 migrate steps downstream are genuine.
+
+Opening an org shows what the connected user can read and where you are in the flow:
+
+![An org overview: the access check and the mapping status, 29 of 29 fields proposed with 4 questions](docs/images/portal-overview.png)
+
+**Review the mapping.** Every target field, where Claude proposes it comes from, and *why* —
+including the fields it deliberately left unmapped, and the low-confidence ones where it
+raises a question instead of guessing:
+
+![Proposed mappings: per-field source, confidence, and Claude's reasoning, with a question on a low-confidence field](docs/images/portal-mappings.png)
+
+**Preview the dry-run.** Every record is built the way the migration would build it and
+counted clean / warning / needs-decision / blocking — nothing written. Failures are grouped
+by cause with a masked example, and records that would collide on a natural key are flagged
+as duplicates. Here is `org_d` (dirty data): 387 would load, 9 are held back — 5 contacts
+missing a required email, 4 deals missing an amount, 3 short phone numbers — plus six
+likely-duplicate contact pairs:
+
+![org_d's dry-run: 387 would load, 9 held back grouped by cause, with six likely-duplicate contact pairs](docs/images/portal-dryrun.png)
+
+**Approve, and the gate closes behind you.** Approval records a hash of the proposals, so a
+mapping changed afterwards invalidates it; the migration then loads exactly what the dry-run
+previewed, and re-running is safe:
+
+![org_d approved: the migrate control, with a note that the migration loads exactly what the dry-run previewed and is safe to re-run](docs/images/portal-approved.png)
 
 ```bash
 pip install -e ".[portal]"
