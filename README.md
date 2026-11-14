@@ -397,14 +397,35 @@ it is not reachable from the MCP server.
 
 ## Roadmap
 
-| Week | Deliverable |
-| --- | --- |
-| 1 | Read tools, masking, audit log, orgs A and B (done) |
-| 2 | Rule engine, mapping proposals, orgs C, D and E, mapping evaluation **(this)** |
-| 3 | Dry-run engine, diff, failure grouping |
-| 4 | Admin screens, approval gate, migration into the target sandbox |
-| 5 | Change Data Capture sync, retry queue, go-live report |
-| 6 | Hosting, held-out run on org E, published results |
+All six weeks are built and merged.
+
+| Week | Deliverable | |
+| --- | --- | --- |
+| 1 | Read tools, masking, audit log, orgs A and B | done |
+| 2 | Rule engine, mapping proposals, orgs C–F, mapping evaluation | done |
+| 3 | Dry-run engine, failure grouping, defect scoring | done |
+| 4 | Hash-bound approval gate, idempotent migration engine | done |
+| 5 | Sync engine, go-live report, audit-log trace | done |
+| 6 | Held-out run on org E, observability, this README | done |
+
+The one piece still ahead is a hosted portal, covered next.
+
+## Hosting
+
+There is nothing to host yet: FirstSync runs as a CLI and an MCP server, with SQLite as
+the target. The portal is the remaining piece, and the hosting choice follows from what
+this project is — a portfolio demo with bursty, near-zero traffic, not a product under
+steady multi-tenant load.
+
+For the demo, the portal will run on a managed platform (Fly.io or Render) with serverless
+Postgres. Scale-to-zero fits bursty traffic: it costs almost nothing between visits and
+wakes on the first request, where an always-on service plus a managed database would bill
+around the clock to serve no one. The production path on AWS is App Runner (or ECS
+Fargate) behind the same audit and tenancy model, with Amazon RDS or Aurora Serverless for
+Postgres and row-level security per tenant — the right shape once there are real tenants
+and steady load, and the wrong shape, pure idle cost, for a demo. Right-sizing the host to
+the traffic is the decision; the production design is written down so the step up is a
+configuration change, not a rewrite.
 
 ## Licence
 
