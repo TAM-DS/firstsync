@@ -8,15 +8,16 @@ A support engineer usually does that by hand. FirstSync gives the work to Claude
 inspects the customer's org, proposes how each field maps, and explains every failure in
 plain language. Deterministic code decides what actually runs.
 
-> **Status: week 4 of 6.** The full pipeline now runs end to end: Claude inspects an org
-> and proposes a validated mapping; a deterministic dry-run shows, per record, exactly
-> what would load and why anything would not; a person approves at the CLI — approval is
-> hash-bound, so a proposal changed after approval invalidates it; and the migration
-> engine loads approved data into the target database, idempotently (re-running reports
-> everything `unchanged` and writes nothing). There is no tool by which the model
-> approves proposals or starts a migration. Sync and the portal are not built yet. This
-> is a reference implementation with no customers. See
-> [What is and is not tested](#what-is-and-is-not-tested).
+> **Status: week 5 of 6.** The full lifecycle runs end to end: Claude inspects an org and
+> proposes a validated mapping; a deterministic dry-run shows, per record, exactly what
+> would load and why anything would not; a person approves at the CLI — approval is
+> hash-bound, so a proposal changed after approval invalidates it; the migration engine
+> loads approved data idempotently; and a sync engine keeps the target in step with the
+> source afterwards — adding and updating safely, and reporting (never acting on) records
+> that regressed or vanished. A go-live report ties it together in plain language. There
+> is no tool by which the model approves, migrates, syncs, or deletes anything. The
+> hosted portal is the remaining piece. This is a reference implementation with no
+> customers. See [What is and is not tested](#what-is-and-is-not-tested).
 
 ## The rule the design is built on
 
@@ -34,7 +35,7 @@ The full design is in [docs/SPEC.md](docs/SPEC.md).
 
 ## What works today
 
-Ten tools, served from one MCP server:
+Eleven tools, served from one MCP server:
 
 | Tool | What it does |
 | --- | --- |
@@ -48,6 +49,7 @@ Ten tools, served from one MCP server:
 | `dryrun_start` | Executes stored proposals over real records without writing, grouped by root cause |
 | `dryrun_get_results` | Returns a stored dry-run instead of re-running one |
 | `migration_get_status` | Returns a stored migration result — counts, skips and who approved. Read-only |
+| `sync_get_status` | Returns a stored sync result — counts and the records that regressed or vanished. Read-only |
 
 Approval and migration are deliberately **not** MCP tools. They are CLI commands run by
 a person:
@@ -56,6 +58,8 @@ a person:
 firstsync proposals org_d            # list proposals and their approval state
 firstsync approve org_d              # approve them as they stand (hash-bound)
 firstsync migrate org_d --db out.db  # load approved data; exits non-zero if refused
+firstsync sync org_d --db out.db     # keep the target in step afterwards
+firstsync report org_d               # where the onboarding stands, in plain language
 ```
 
 An approval stores a SHA-256 of each approved proposal. If any proposal changes
@@ -68,6 +72,24 @@ the report. The upsert key is `(tenant, external_id)`, so re-running a migration
 always safe: the second run reports everything `unchanged`. The target database is
 SQLite by default (tests and CI need no services); the DDL is generated from the same
 `TARGET_SCHEMA` the dry-run validates against, so the schema cannot drift.
+
+**Sync** is the ongoing half. A migration happens once; onboarding does not end there.
+`firstsync sync` re-reads the source, rebuilds every row with the same `build_row`, and
+applies only what changed: new records are added, changed records updated, the rest left
+alone. It moves data only in the safe direction. Two situations are reported for a person
+to decide and otherwise left untouched:
+
+| sync finds | what it means | what sync does |
+| --- | --- | --- |
+| `regressed` | a record that loaded cleanly now fails validation in the source | leaves the good target row intact |
+| `vanished` | a record in the target is no longer in the source | reports it; deleting is a human call |
+
+`firstsync sync` exits `0` when all is quiet, `2` when something needs attention, so a
+scheduled run can page a human only when it should. Sync reads up to `--limit` records
+per object (default 2000); a source larger than the limit is read only in part, so for a
+true picture the limit must exceed the object's size. **`firstsync report`** is a plain
+view over the state the engines already wrote — approval, last dry-run, migration, latest
+sync — with a headline, what is live, and what is still open. It computes nothing new.
 
 The dry-run engine is deterministic code, not the model. Every record is built the way
 the migration would build it and comes back as **clean**, **warning** (an optional value
@@ -103,7 +125,7 @@ Pythons refuse installs outside one.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q                               # 198 tests, no network, no API key
+pytest -q                               # 209 tests, no network, no API key
 python scripts/run_eval.py --baseline   # the evaluation, with name matching instead of a model
 python -m firstsync.mcp_server          # the MCP server, over stdio
 ```
@@ -274,6 +296,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | Tools, masking, rules, mapping validation, scoring, fixtures, answer keys | Unit tests, offline |
 | Dry-run engine | Unit tests against the planted defects in org D, plus property-based tests (Hypothesis) that any limit is safe and re-running never changes the verdict |
 | Approval gate and migration | Unit tests: no approval → refused; changed proposal → refused naming the field; migration counts equal the dry-run's per table; property-based test that N runs equal one run |
+| Sync and go-live report | Unit tests mutate a source between runs: a new record is added, a changed one updated, a deleted one reported as vanished (not deleted), a broken one flagged as regressed (target left intact); report reflects the full onboarding |
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |

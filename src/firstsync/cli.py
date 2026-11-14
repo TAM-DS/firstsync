@@ -7,6 +7,8 @@ The subcommands an administrator or a developer actually needs:
     firstsync proposals ORG         list stored proposals and their approval state
     firstsync approve ORG           approve the proposals as they stand (human-only gate)
     firstsync migrate ORG --db PATH run the approved migration into the target database
+    firstsync sync ORG --db PATH    bring the target in step with the source, safely
+    firstsync report ORG            where this onboarding stands, in plain language
     firstsync audit [--last N]      show the last audit-log entries
 
 Approval and migration are deliberately CLI commands, not MCP tools: the model proposes;
@@ -19,7 +21,7 @@ import argparse
 import json
 import sys
 
-from firstsync import approval, audit, dryrun, migrate
+from firstsync import approval, audit, dryrun, golive, migrate, sync
 from firstsync.connections import get_client
 from firstsync.mapping import ProposalStore
 from firstsync.target.db import TargetDB
@@ -48,6 +50,15 @@ def main(argv: list[str] | None = None) -> int:
     mig.add_argument("connection")
     mig.add_argument("--db", required=True, help="SQLite database path (created if absent).")
     mig.add_argument("--limit", type=int, default=dryrun.SCAN_LIMIT)
+
+    syn = sub.add_parser("sync", help="Bring the target in step with the source.")
+    syn.add_argument("connection")
+    syn.add_argument("--db", required=True, help="SQLite database path.")
+    syn.add_argument("--limit", type=int, default=dryrun.SCAN_LIMIT)
+
+    rep = sub.add_parser("report", help="Where this onboarding stands.")
+    rep.add_argument("connection")
+    rep.add_argument("--json", action="store_true", help="Emit the raw report as JSON.")
 
     log = sub.add_parser("audit", help="Show the last audit-log entries.")
     log.add_argument("--last", type=int, default=20)
@@ -109,6 +120,24 @@ def main(argv: list[str] | None = None) -> int:
             db.close()
         print(json.dumps(migrate.status_summary(outcome), indent=2))
         return 0 if outcome.status == "completed" else 1
+
+    if args.command == "sync":
+        db = TargetDB(args.db)
+        try:
+            synced = sync.run_sync(
+                get_client(args.connection), args.connection, db, args.limit
+            )
+        finally:
+            db.close()
+        print(json.dumps(sync.status_summary(synced), indent=2))
+        if synced.status != "completed":
+            return 1
+        return 2 if synced.needs_attention() else 0
+
+    if args.command == "report":
+        report = golive.build(args.connection)
+        print(json.dumps(report, indent=2) if args.json else golive.render(report))
+        return 0
 
     path = audit.log_path()
     if not path.is_file():
