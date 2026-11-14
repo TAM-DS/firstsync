@@ -8,14 +8,14 @@ A support engineer usually does that by hand. FirstSync gives the work to Claude
 inspects the customer's org, proposes how each field maps, and explains every failure in
 plain language. Deterministic code decides what actually runs.
 
-> **Status: week 3 of 6.** Claude can inspect an org and propose a validated mapping for
-> every target field; an evaluation scores those proposals against answer keys for six
-> synthetic orgs; and a deterministic dry-run engine now executes stored proposals over
-> real records — writing nothing — and reports, per record, whether it would load,
-> grouped by root cause, with duplicates flagged by natural key. The evaluation checks
-> that the pipeline catches the defects planted in org D (it catches 4 of 4, for both
-> models tested). Approval, migration and sync are not built yet. This is a reference
-> implementation with no customers. See
+> **Status: week 4 of 6.** The full pipeline now runs end to end: Claude inspects an org
+> and proposes a validated mapping; a deterministic dry-run shows, per record, exactly
+> what would load and why anything would not; a person approves at the CLI — approval is
+> hash-bound, so a proposal changed after approval invalidates it; and the migration
+> engine loads approved data into the target database, idempotently (re-running reports
+> everything `unchanged` and writes nothing). There is no tool by which the model
+> approves proposals or starts a migration. Sync and the portal are not built yet. This
+> is a reference implementation with no customers. See
 > [What is and is not tested](#what-is-and-is-not-tested).
 
 ## The rule the design is built on
@@ -34,7 +34,7 @@ The full design is in [docs/SPEC.md](docs/SPEC.md).
 
 ## What works today
 
-Nine tools, served from one MCP server:
+Ten tools, served from one MCP server:
 
 | Tool | What it does |
 | --- | --- |
@@ -47,6 +47,27 @@ Nine tools, served from one MCP server:
 | `mapping_propose` | Validates mapping proposals and stores the valid ones for approval |
 | `dryrun_start` | Executes stored proposals over real records without writing, grouped by root cause |
 | `dryrun_get_results` | Returns a stored dry-run instead of re-running one |
+| `migration_get_status` | Returns a stored migration result — counts, skips and who approved. Read-only |
+
+Approval and migration are deliberately **not** MCP tools. They are CLI commands run by
+a person:
+
+```bash
+firstsync proposals org_d            # list proposals and their approval state
+firstsync approve org_d              # approve them as they stand (hash-bound)
+firstsync migrate org_d --db out.db  # load approved data; exits non-zero if refused
+```
+
+An approval stores a SHA-256 of each approved proposal. If any proposal changes
+afterwards — the model proposed again, a file was edited — the migration refuses to run
+and names the changed fields, until a person approves again. The migration builds every
+row with the same `build_row` the dry-run used, so what the administrator saw in the
+dry-run is exactly what loads: `clean` and `warning` records load (a warned optional
+value is dropped), `blocking` and `needs_decision` records are skipped with their Ids in
+the report. The upsert key is `(tenant, external_id)`, so re-running a migration is
+always safe: the second run reports everything `unchanged`. The target database is
+SQLite by default (tests and CI need no services); the DDL is generated from the same
+`TARGET_SCHEMA` the dry-run validates against, so the schema cannot drift.
 
 The dry-run engine is deterministic code, not the model. Every record is built the way
 the migration would build it and comes back as **clean**, **warning** (an optional value
@@ -82,7 +103,7 @@ Pythons refuse installs outside one.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q                               # 185 tests, no network, no API key
+pytest -q                               # 198 tests, no network, no API key
 python scripts/run_eval.py --baseline   # the evaluation, with name matching instead of a model
 python -m firstsync.mcp_server          # the MCP server, over stdio
 ```
@@ -252,6 +273,7 @@ administrator, and neither can a low-confidence mapping or a required field with
 | --- | --- |
 | Tools, masking, rules, mapping validation, scoring, fixtures, answer keys | Unit tests, offline |
 | Dry-run engine | Unit tests against the planted defects in org D, plus property-based tests (Hypothesis) that any limit is safe and re-running never changes the verdict |
+| Approval gate and migration | Unit tests: no approval → refused; changed proposal → refused naming the field; migration counts equal the dry-run's per table; property-based test that N runs equal one run |
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
