@@ -439,11 +439,20 @@ raises a question instead of guessing:
 
 ![Proposed mappings: per-field source, confidence, and Claude's reasoning, with a question on a low-confidence field](docs/images/portal-mappings.png)
 
-**Preview the dry-run.** Every record built the way the migration would build it, counted
-clean / warning / needs-decision / blocking — nothing written. Approving records a hash of
-the proposals, so a mapping changed afterwards invalidates it:
+**Preview the dry-run.** Every record is built the way the migration would build it and
+counted clean / warning / needs-decision / blocking — nothing written. Failures are grouped
+by cause with a masked example, and records that would collide on a natural key are flagged
+as duplicates. Here is `org_d` (dirty data): 387 would load, 9 are held back — 5 contacts
+missing a required email, 4 deals missing an amount, 3 short phone numbers — plus six
+likely-duplicate contact pairs:
 
-![The dry-run preview: per-table counts of what would and would not load, with an Approve button](docs/images/portal-dryrun.png)
+![org_d's dry-run: 387 would load, 9 held back grouped by cause, with six likely-duplicate contact pairs](docs/images/portal-dryrun.png)
+
+**Approve, and the gate closes behind you.** Approval records a hash of the proposals, so a
+mapping changed afterwards invalidates it; the migration then loads exactly what the dry-run
+previewed, and re-running is safe:
+
+![org_d approved: the migrate control, with a note that the migration loads exactly what the dry-run previewed and is safe to re-run](docs/images/portal-approved.png)
 
 ```bash
 pip install -e ".[portal]"
