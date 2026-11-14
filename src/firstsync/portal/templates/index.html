@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Onboard a customer</h1>
+<p class="lead">Pick a customer Salesforce org to onboard into the target product. Each is a
+synthetic org with its own quirks; Claude has already proposed how every field maps.</p>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Org</th><th>Proposals</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for org in orgs %}
+      <tr>
+        <td><strong>{{ org.name }}</strong></td>
+        <td>{% if org.has_demo %}Claude's mapping ready{% else %}<span class="muted">none bundled</span>{% endif %}</td>
+        <td>{% if org.approved %}<span class="pill clean">approved</span>{% else %}<span class="muted">not started</span>{% endif %}</td>
+        <td><a class="btn secondary" href="/org/{{ org.name }}">Open</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p class="muted">The portal never calls the model. It shows Claude's proposals and the
+dry-run preview, and the approve and migrate controls are server actions a person takes.</p>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ connection }} report — FirstSync{% endblock %}
+{% block body %}
+<h1>Go-live report — {{ connection }}</h1>
+<p class="lead">{{ report.headline }}</p>
+
+{% if report.migration %}
+<div class="card">
+  <h2 style="margin-top:0">Migration</h2>
+  <p><span class="big">{{ report.migration.inserted }}</span> inserted ·
+     {{ report.migration.updated }} updated · {{ report.migration.unchanged }} unchanged ·
+     {{ report.migration.skipped }} skipped</p>
+  {% if report.approved %}
+  <p class="muted">Approved by {{ report.approved.by }}, {{ report.approved.fields }} fields.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if report.latest_sync %}
+<div class="card">
+  <h2 style="margin-top:0">Latest sync</h2>
+  <p>{{ report.latest_sync.added }} added · {{ report.latest_sync.changed }} changed ·
+     {{ report.latest_sync.regressed }} regressed · {{ report.latest_sync.vanished }} vanished</p>
+</div>
+{% endif %}
+
+{% if report.open_items %}
+<div class="card">
+  <h2 style="margin-top:0">Open items</h2>
+  <ul class="plain">{% for item in report.open_items %}<li>{{ item }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<div class="row">
+  <form method="post" action="/org/{{ connection }}/sync" style="display:inline">
+    <button class="btn secondary" type="submit">Run sync</button></form>
+  <form method="post" action="/org/{{ connection }}/migrate" style="display:inline">
+    <button class="btn secondary" type="submit">Re-run migration (safe)</button></form>
+  <a class="btn secondary" href="/org/{{ connection }}">Back to org</a>
+</div>
+{% endblock %}

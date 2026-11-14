@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     run_id: str = Field(default=_PROCESS_RUN_ID, min_length=1, max_length=64)
     max_tool_calls: int = Field(default=300, ge=1, le=10_000)
     model: str | None = None
+    portal_port: int = Field(default=8000, ge=1, le=65_535)
 
 
 def get_settings() -> Settings:
