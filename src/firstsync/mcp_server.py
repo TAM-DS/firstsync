@@ -16,7 +16,7 @@ from typing import Any
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
-from firstsync import audit, dryrun, migrate, tools
+from firstsync import audit, dryrun, migrate, sync, tools
 from firstsync.config import get_settings
 from firstsync.connections import get_client
 from firstsync.rules import RULE_HELP
@@ -44,6 +44,7 @@ TOOL_NAMES = (
     "dryrun_start",
     "dryrun_get_results",
     "migration_get_status",
+    "sync_get_status",
 )
 
 _calls = 0
@@ -239,6 +240,26 @@ def migration_get_status(connection: str, run_id: str | None = None) -> dict[str
         connection,
         {"run_id": run_id},
         lambda: migrate.status_summary(migrate.load(connection, run_id)),
+    )
+
+
+SYNC_STATUS_DOC = (
+    "Return the result of a stored sync run for a connection: the latest, or 'run_id' for "
+    "a specific run. Counts (added, changed, unchanged) and the record Ids that need an "
+    "administrator — 'regressed' (loaded before, now fails in the source) and 'vanished' "
+    "(gone from the source). Read-only: sync runs at the CLI, and it never deletes or "
+    "overwrites a loaded record with a broken one."
+)
+
+
+@server.tool(description=SYNC_STATUS_DOC)
+def sync_get_status(connection: str, run_id: str | None = None) -> dict[str, Any]:
+    return _logged(
+        "sync_get_status",
+        "sync",
+        connection,
+        {"run_id": run_id},
+        lambda: sync.status_summary(sync.load(connection, run_id)),
     )
 
 

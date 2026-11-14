@@ -29,6 +29,7 @@ def test_server_exposes_exactly_the_expected_tools():
         "sf_count_records",
         "sf_describe_object",
         "sf_sample_records",
+        "sync_get_status",
         "target_get_schema",
     ]
     assert all(t.description for t in listed)

@@ -90,6 +90,15 @@ class TargetDB:
         )
         return int(result.fetchone()[0])
 
+    def external_ids(self, table: str, tenant: str) -> set[str]:
+        """Every external_id already loaded into one table for one tenant."""
+        if table not in TARGET_SCHEMA["tables"]:
+            raise ValueError(f"No such target table: {table!r}.")
+        rows = self._conn.execute(
+            f"SELECT external_id FROM {table} WHERE tenant_id = ?", (tenant,)
+        )
+        return {str(r[0]) for r in rows.fetchall()}
+
     def commit(self) -> None:
         self._conn.commit()
 
