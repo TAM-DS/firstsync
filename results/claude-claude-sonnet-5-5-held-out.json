@@ -1,0 +1,611 @@
+{
+  "label": "claude-claude-sonnet-5-5-held-out",
+  "model": "claude-sonnet-5-5",
+  "orgs": {
+    "org_e": {
+      "mean_accuracy": 1.0,
+      "date": "2026-11-14T03:15:42+00:00",
+      "prompt_sha256_12": "a2d2c0412040",
+      "runs": [
+        {
+          "org": "org_e",
+          "total": 29,
+          "accuracy": 1.0,
+          "counts": {
+            "correct": 29,
+            "should_have_asked": 0,
+            "wrong_source": 0,
+            "missed": 0,
+            "invented": 0
+          },
+          "questions_asked": 9,
+          "questions_required": 9,
+          "extra_questions": [],
+          "fields": [
+            {
+              "target": "accounts.external_id",
+              "outcome": "correct",
+              "expected": "Account.Id",
+              "proposed": "Account.Id",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.name",
+              "outcome": "correct",
+              "expected": "Account.Name",
+              "proposed": "Account.Name",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.industry",
+              "outcome": "correct",
+              "expected": "Account.Segment__c",
+              "proposed": "Account.Segment__c",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.tier",
+              "outcome": "correct",
+              "expected": "Account.Plan_Level__c",
+              "proposed": "Account.Plan_Level__c",
+              "must_ask": true
+            },
+            {
+              "target": "accounts.website",
+              "outcome": "correct",
+              "expected": "Account.Website",
+              "proposed": "Account.Website",
+              "must_ask": false
+            },
+            {
+              "target": "accounts.customer_since",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "accounts.owner_email",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "contacts.external_id",
+              "outcome": "correct",
+              "expected": "Contact.Id",
+              "proposed": "Contact.Id",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.account_external_id",
+              "outcome": "correct",
+              "expected": "Contact.AccountId",
+              "proposed": "Contact.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.first_name",
+              "outcome": "correct",
+              "expected": "Contact.FirstName",
+              "proposed": "Contact.FirstName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.last_name",
+              "outcome": "correct",
+              "expected": "Contact.LastName",
+              "proposed": "Contact.LastName",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.email",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "contacts.phone",
+              "outcome": "correct",
+              "expected": "Contact.Phone",
+              "proposed": "Contact.Phone",
+              "must_ask": false
+            },
+            {
+              "target": "contacts.role",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "deals.external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.Id",
+              "proposed": "Opportunity.Id",
+              "must_ask": false
+            },
+            {
+              "target": "deals.account_external_id",
+              "outcome": "correct",
+              "expected": "Opportunity.AccountId",
+              "proposed": "Opportunity.AccountId",
+              "must_ask": false
+            },
+            {
+              "target": "deals.name",
+              "outcome": "correct",
+              "expected": "Opportunity.Name",
+              "proposed": "Opportunity.Name",
+              "must_ask": false
+            },
+            {
+              "target": "deals.amount",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "deals.currency",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "deals.stage",
+              "outcome": "correct",
+              "expected": "Opportunity.StageName",
+              "proposed": "Opportunity.StageName",
+              "must_ask": false
+            },
+            {
+              "target": "deals.close_date",
+              "outcome": "correct",
+              "expected": "Opportunity.CloseDate",
+              "proposed": "Opportunity.CloseDate",
+              "must_ask": false
+            },
+            {
+              "target": "deals.owner_email",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            },
+            {
+              "target": "activities.external_id",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "activities.related_type",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "activities.related_external_id",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "activities.kind",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "activities.subject",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "activities.occurred_at",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": true
+            },
+            {
+              "target": "activities.notes",
+              "outcome": "correct",
+              "expected": null,
+              "proposed": null,
+              "must_ask": false
+            }
+          ],
+          "turns": 14,
+          "seconds": 31.3,
+          "cost_usd": 0.12214199999999999,
+          "tool_calls": 13,
+          "dryrun_defects": null,
+          "proposals": {
+            "accounts.customer_since": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account"
+              ],
+              "question_for_admin": null,
+              "reason": "No readable account date field in the org (optional); left unmapped.",
+              "rule": [],
+              "source": null,
+              "target": "accounts.customer_since"
+            },
+            "accounts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [],
+              "source": "Account.Id",
+              "target": "accounts.external_id"
+            },
+            "accounts.industry": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Account.Segment__c",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Segment__c values are industries (Retail, Manufacturing, Technology, Energy, Healthcare, Financial Services), so it holds industry despite its label.",
+              "rule": [],
+              "source": "Account.Segment__c",
+              "target": "accounts.industry"
+            },
+            "accounts.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Name",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "Account name, required, matches.",
+              "rule": [],
+              "source": "Account.Name",
+              "target": "accounts.name"
+            },
+            "accounts.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account"
+              ],
+              "question_for_admin": null,
+              "reason": "No owner or email field readable on Account (optional); left unmapped.",
+              "rule": [],
+              "source": null,
+              "target": "accounts.owner_email"
+            },
+            "accounts.tier": {
+              "confidence": "low",
+              "evidence": [
+                "describe:Account.Plan_Level__c",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": "How should Plan Level map to tier? I assumed Scale=enterprise, Growth=standard, Starter=free. Is Starter a paid plan that should be 'standard' instead?",
+              "reason": "Plan_Level__c has Scale/Growth/Starter; the three levels likely correspond to enterprise/standard/free but the org doesn't say, notably whether Starter is free or standard.",
+              "rule": [
+                {
+                  "case_insensitive": true,
+                  "op": "map_values",
+                  "table": {
+                    "Growth": "standard",
+                    "Scale": "enterprise",
+                    "Starter": "free"
+                  },
+                  "unmapped": "ask_admin"
+                }
+              ],
+              "source": "Account.Plan_Level__c",
+              "target": "accounts.tier"
+            },
+            "accounts.website": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Account.Website",
+                "sample:Account#1-40"
+              ],
+              "question_for_admin": null,
+              "reason": "URL field maps directly.",
+              "rule": [],
+              "source": "Account.Website",
+              "target": "accounts.website"
+            },
+            "activities.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "check_access:Task"
+              ],
+              "question_for_admin": "Please grant Read on Task (and Event if used) to the connected user via a permission set so activities can be mapped.",
+              "reason": "Activities would come from Task, which the connected user cannot read.",
+              "rule": [],
+              "source": null,
+              "target": "activities.external_id"
+            },
+            "activities.kind": {
+              "confidence": "high",
+              "evidence": [
+                "check_access:Task"
+              ],
+              "question_for_admin": "Blocked on Read permission for Task (see activities.external_id).",
+              "reason": "Task is unreadable; no source available.",
+              "rule": [],
+              "source": null,
+              "target": "activities.kind"
+            },
+            "activities.notes": {
+              "confidence": "high",
+              "evidence": [
+                "check_access:Task"
+              ],
+              "question_for_admin": null,
+              "reason": "Task is unreadable; optional field, left unmapped.",
+              "rule": [],
+              "source": null,
+              "target": "activities.notes"
+            },
+            "activities.occurred_at": {
+              "confidence": "high",
+              "evidence": [
+                "check_access:Task"
+              ],
+              "question_for_admin": "Blocked on Read permission for Task (see activities.external_id).",
+              "reason": "Task is unreadable; no source available.",
+              "rule": [],
+              "source": null,
+              "target": "activities.occurred_at"
+            },
+            "activities.related_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "check_access:Task"
+              ],
+              "question_for_admin": "Blocked on Read permission for Task (see activities.external_id).",
+              "reason": "Task is unreadable; no source available.",
+              "rule": [],
+              "source": null,
+              "target": "activities.related_external_id"
+            },
+            "activities.related_type": {
+              "confidence": "high",
+              "evidence": [
+                "check_access:Task"
+              ],
+              "question_for_admin": "Blocked on Read permission for Task (see activities.external_id).",
+              "reason": "Task is unreadable; no source available.",
+              "rule": [],
+              "source": null,
+              "target": "activities.related_type"
+            },
+            "activities.subject": {
+              "confidence": "high",
+              "evidence": [
+                "check_access:Task"
+              ],
+              "question_for_admin": "Blocked on Read permission for Task (see activities.external_id).",
+              "reason": "Task is unreadable; no source available.",
+              "rule": [],
+              "source": null,
+              "target": "activities.subject"
+            },
+            "contacts.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.AccountId",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account Id, which is used as accounts.external_id.",
+              "rule": [],
+              "source": "Contact.AccountId",
+              "target": "contacts.account_external_id"
+            },
+            "contacts.email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact"
+              ],
+              "question_for_admin": "Contact.Email is required in the target but isn't readable by the connected user. Please grant field-level read access on Contact.Email (and confirm it exists), or say where emails should come from.",
+              "reason": "Required, but Contact has no readable email field; describe shows only Id, AccountId, FirstName, LastName, Phone, Title. Possibly hidden by field-level security.",
+              "rule": [],
+              "source": null,
+              "target": "contacts.email"
+            },
+            "contacts.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [],
+              "source": "Contact.Id",
+              "target": "contacts.external_id"
+            },
+            "contacts.first_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.FirstName"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match.",
+              "rule": [],
+              "source": "Contact.FirstName",
+              "target": "contacts.first_name"
+            },
+            "contacts.last_name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.LastName"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match, required.",
+              "rule": [],
+              "source": "Contact.LastName",
+              "target": "contacts.last_name"
+            },
+            "contacts.phone": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Phone",
+                "sample:Contact#1-50",
+                "rule_test:Contact.Phone"
+              ],
+              "question_for_admin": null,
+              "reason": "US-format numbers normalize to E.164 with country code 1; 50/50 passed.",
+              "rule": [
+                {
+                  "default_country_code": "1",
+                  "op": "normalize_phone"
+                }
+              ],
+              "source": "Contact.Phone",
+              "target": "contacts.phone"
+            },
+            "contacts.role": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Contact.Title",
+                "sample:Contact#1-50"
+              ],
+              "question_for_admin": null,
+              "reason": "Title holds job titles (CTO, Controller, Analyst), which the target says is not the role. Nothing in the org holds buying-relationship role; optional, left unmapped.",
+              "rule": [],
+              "source": null,
+              "target": "contacts.role"
+            },
+            "deals.account_external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.AccountId"
+              ],
+              "question_for_admin": null,
+              "reason": "Reference to Account Id.",
+              "rule": [],
+              "source": "Opportunity.AccountId",
+              "target": "deals.account_external_id"
+            },
+            "deals.amount": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": "Opportunity.Amount is required in the target but isn't readable. Please grant field-level read access on Opportunity.Amount, or tell us what the amount should be.",
+              "reason": "Required, but Opportunity has no readable Amount field (only Id, AccountId, Name, StageName, CloseDate). Likely blocked by field-level security.",
+              "rule": [],
+              "source": null,
+              "target": "deals.amount"
+            },
+            "deals.close_date": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.CloseDate",
+                "rule_test:Opportunity.CloseDate"
+              ],
+              "question_for_admin": null,
+              "reason": "Already ISO dates; 50/50 passed.",
+              "rule": [
+                {
+                  "op": "cast",
+                  "to": "date"
+                }
+              ],
+              "source": "Opportunity.CloseDate",
+              "target": "deals.close_date"
+            },
+            "deals.currency": {
+              "confidence": "medium",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "No currency field readable; target says default USD, so USD is applied to all records.",
+              "rule": [
+                {
+                  "op": "default",
+                  "value": "USD"
+                }
+              ],
+              "source": null,
+              "target": "deals.currency"
+            },
+            "deals.external_id": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Id"
+              ],
+              "question_for_admin": null,
+              "reason": "Source record Id.",
+              "rule": [],
+              "source": "Opportunity.Id",
+              "target": "deals.external_id"
+            },
+            "deals.name": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.Name"
+              ],
+              "question_for_admin": null,
+              "reason": "Direct match.",
+              "rule": [],
+              "source": "Opportunity.Name",
+              "target": "deals.name"
+            },
+            "deals.owner_email": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity"
+              ],
+              "question_for_admin": null,
+              "reason": "No owner field readable on Opportunity (optional); left unmapped.",
+              "rule": [],
+              "source": null,
+              "target": "deals.owner_email"
+            },
+            "deals.stage": {
+              "confidence": "high",
+              "evidence": [
+                "describe:Opportunity.StageName",
+                "rule_test:Opportunity.StageName"
+              ],
+              "question_for_admin": null,
+              "reason": "Each picklist value maps one-to-one to a target stage; 50/50 passed.",
+              "rule": [
+                {
+                  "op": "map_values",
+                  "table": {
+                    "Closed Lost": "closed_lost",
+                    "Closed Won": "closed_won",
+                    "Negotiation/Review": "negotiation",
+                    "Proposal/Price Quote": "proposal",
+                    "Prospecting": "lead",
+                    "Qualification": "qualified"
+                  },
+                  "unmapped": "error"
+                }
+              ],
+              "source": "Opportunity.StageName",
+              "target": "deals.stage"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "date": "2026-11-14T03:15:42+00:00",
+  "mean_accuracy": 1.0,
+  "rescored": "2026-11-14T03:24:33+00:00"
+}

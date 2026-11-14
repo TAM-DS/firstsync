@@ -9,6 +9,7 @@ The subcommands an administrator or a developer actually needs:
     firstsync migrate ORG --db PATH run the approved migration into the target database
     firstsync sync ORG --db PATH    bring the target in step with the source, safely
     firstsync report ORG            where this onboarding stands, in plain language
+    firstsync trace [--run ID]      what the agent did, read back from the audit log
     firstsync audit [--last N]      show the last audit-log entries
 
 Approval and migration are deliberately CLI commands, not MCP tools: the model proposes;
@@ -21,7 +22,7 @@ import argparse
 import json
 import sys
 
-from firstsync import approval, audit, dryrun, golive, migrate, sync
+from firstsync import approval, audit, dryrun, golive, migrate, sync, trace
 from firstsync.connections import get_client
 from firstsync.mapping import ProposalStore
 from firstsync.target.db import TargetDB
@@ -59,6 +60,10 @@ def main(argv: list[str] | None = None) -> int:
     rep = sub.add_parser("report", help="Where this onboarding stands.")
     rep.add_argument("connection")
     rep.add_argument("--json", action="store_true", help="Emit the raw report as JSON.")
+
+    tr = sub.add_parser("trace", help="Summarize what the agent did, from the audit log.")
+    tr.add_argument("--run", default=None, help="Show one run's full timeline.")
+    tr.add_argument("--connection", default=None, help="Only runs touching this connection.")
 
     log = sub.add_parser("audit", help="Show the last audit-log entries.")
     log.add_argument("--last", type=int, default=20)
@@ -137,6 +142,17 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "report":
         report = golive.build(args.connection)
         print(json.dumps(report, indent=2) if args.json else golive.render(report))
+        return 0
+
+    if args.command == "trace":
+        if args.run:
+            try:
+                print(trace.render_run(trace.one(args.run)))
+            except ValueError as exc:
+                print(str(exc), file=sys.stderr)
+                return 2
+        else:
+            print(trace.render_list(trace.runs(connection=args.connection)))
         return 0
 
     path = audit.log_path()

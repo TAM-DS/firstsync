@@ -8,16 +8,38 @@ A support engineer usually does that by hand. FirstSync gives the work to Claude
 inspects the customer's org, proposes how each field maps, and explains every failure in
 plain language. Deterministic code decides what actually runs.
 
-> **Status: week 5 of 6.** The full lifecycle runs end to end: Claude inspects an org and
-> proposes a validated mapping; a deterministic dry-run shows, per record, exactly what
-> would load and why anything would not; a person approves at the CLI — approval is
-> hash-bound, so a proposal changed after approval invalidates it; the migration engine
-> loads approved data idempotently; and a sync engine keeps the target in step with the
-> source afterwards — adding and updating safely, and reporting (never acting on) records
-> that regressed or vanished. A go-live report ties it together in plain language. There
-> is no tool by which the model approves, migrates, syncs, or deletes anything. The
-> hosted portal is the remaining piece. This is a reference implementation with no
-> customers. See [What is and is not tested](#what-is-and-is-not-tested).
+> **Status: week 6 of 6 — feature-complete.** The full lifecycle runs end to end: Claude
+> inspects an org and proposes a validated mapping; a deterministic dry-run shows, per
+> record, exactly what would load and why anything would not; a person approves at the
+> CLI — approval is hash-bound, so a proposal changed after approval invalidates it; the
+> migration engine loads approved data idempotently; and a sync engine keeps the target
+> in step afterwards, adding and updating safely while reporting (never acting on) records
+> that regressed or vanished. A go-live report and a `trace` view over the audit log tie
+> it together. There is no tool by which the model approves, migrates, syncs, or deletes
+> anything. The held-out org scored [100% with perfectly calibrated
+> questions](#the-held-out-org-e). What remains is a hosted portal, not core logic. This
+> is a reference implementation with no customers. See
+> [What is and is not tested](#what-is-and-is-not-tested).
+
+```mermaid
+flowchart LR
+    SF[(Customer<br/>Salesforce)] -->|read-only, masked| C{{Claude}}
+    C -->|proposes mappings| P[Proposals<br/>+ rules]
+    P --> D[Dry-run<br/>deterministic]
+    D -->|per-record verdict| H([Human approves<br/>hash-bound])
+    H -->|authorizes| M[Migrate<br/>idempotent]
+    M --> T[(Target DB)]
+    T --> Y[Sync<br/>keeps in step]
+    SF -.-> Y
+    C -.every call logged.-> A[(Audit log<br/>→ trace)]
+    classDef human fill:#fde68a,stroke:#b45309,color:#000;
+    classDef model fill:#dbeafe,stroke:#1e40af,color:#000;
+    class H human;
+    class C model;
+```
+
+Claude (blue) only ever reads and proposes. The human (amber) is the only authorizing
+step. Everything between — dry-run, migrate, sync — is deterministic code.
 
 ## The rule the design is built on
 
@@ -60,6 +82,18 @@ firstsync approve org_d              # approve them as they stand (hash-bound)
 firstsync migrate org_d --db out.db  # load approved data; exits non-zero if refused
 firstsync sync org_d --db out.db     # keep the target in step afterwards
 firstsync report org_d               # where the onboarding stands, in plain language
+firstsync trace                      # what the agent did, read back from the audit log
+```
+
+Every tool call is logged with a hash of what it returned; `firstsync trace` reads that
+log back and summarizes each session — the stages it moved through, every tool call, and
+any failures. It is a reviewer's view, deliberately not an MCP tool: a person reads the
+agent's record, the agent does not narrate its own.
+
+```text
+Run de0581dc9e58
+  stages:  connect -> discover -> dryrun
+  calls:   4 (0 failed)
 ```
 
 An approval stores a SHA-256 of each approved proposal. If any proposal changes
@@ -125,7 +159,7 @@ Pythons refuse installs outside one.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q                               # 209 tests, no network, no API key
+pytest -q                               # 214 tests, no network, no API key
 python scripts/run_eval.py --baseline   # the evaluation, with name matching instead of a model
 python -m firstsync.mcp_server          # the MCP server, over stdio
 ```
@@ -251,8 +285,43 @@ hypothetical questions on org B ("what if an unsampled record holds another valu
   same orgs. Each key change allowed a question that turned out to be legitimate; none
   changed a source. The first run also scored 100% but asked 17 extra questions in 4
   runs. The full history is in [docs/week2-first-eval.md](docs/week2-first-eval.md).
-- Org E has not been run. It is held out for exactly that reason and is run once, at the
-  end, with `--held-out`.
+- Org E was held out and is now run (below). It is the one number tuned against nothing.
+
+### The held-out org (E)
+
+Org E was generated at the start, locked (two objects and several fields the connected
+user cannot read), and **never looked at while the prompt or the answer keys were being
+tuned**. It was run once, at the end:
+[results/claude-claude-sonnet-5-5-held-out.json](results/claude-claude-sonnet-5-5-held-out.json).
+
+| | org E, held out |
+| --- | --- |
+| Accuracy | **29/29 (100%)** |
+| Questions asked | 9 |
+| Questions the key required | 9 |
+| Extra questions | 0 |
+| Cost / turns | ~$0.12, 14 turns |
+
+Every other 100% in this README was measured on an org the prompt had seen. This one was
+not, and it is the result the project was built to earn. The accuracy matters less than
+*how* it got there — the locked-down org is a test of judgment, not pattern-matching, and
+the proposals show the judgment:
+
+- **It read values, not labels.** `accounts.industry` has no obvious source; the org's
+  `Segment__c` field *sounds* like something else. Claude looked at the sampled values
+  (Retail, Manufacturing, Healthcare…), saw they were industries, and mapped it — no
+  question needed.
+- **It asked for access instead of inventing a source.** `contacts.email` and
+  `deals.amount` are required in the target but hidden by field-level security. Claude did
+  not guess a substitute; it named the missing field and asked for read access.
+- **It asked once for a root cause, not once per symptom.** The whole `Task` object is
+  unreadable, which blocks six `activities.*` fields. Claude asked for Read on `Task`
+  once and pointed the other five at that one request, rather than raising six separate
+  questions — and left the optional `activities.notes` unmapped with no question at all.
+- **It did not over-ask.** `contacts.role` had a plausible-looking source (`Title`), but
+  `Title` holds job titles, which the target explicitly says is not the role. Claude left
+  it unmapped without a question. 9 questions asked, 9 genuinely needed, 0 extra — on an
+  org it had never seen.
 
 ## How masking works
 
@@ -297,6 +366,8 @@ administrator, and neither can a low-confidence mapping or a required field with
 | Dry-run engine | Unit tests against the planted defects in org D, plus property-based tests (Hypothesis) that any limit is safe and re-running never changes the verdict |
 | Approval gate and migration | Unit tests: no approval → refused; changed proposal → refused naming the field; migration counts equal the dry-run's per table; property-based test that N runs equal one run |
 | Sync and go-live report | Unit tests mutate a source between runs: a new record is added, a changed one updated, a deleted one reported as vanished (not deleted), a broken one flagged as regressed (target left intact); report reflects the full onboarding |
+| Trace / audit view | Unit tests: calls grouped by run, failures surfaced, connection filter, malformed lines skipped |
+| Held-out org E | Run once, never tuned against; rescored by the repo's own scorer to 100% (29/29, 9/9 questions, 0 extra) |
 | MCP server | Unit tests, plus a real MCP client over stdio |
 | Evaluation pipeline | End to end with the baseline mapper |
 | `scripts/describe_org.py` | Run against org B in week 1: all six planted problems found. See [the report](docs/week1-org-b-report.md). |
