@@ -42,6 +42,29 @@ flowchart LR
 Claude (blue) only ever reads and proposes. The human (amber) is the only authorizing
 step. Everything between — dry-run, migrate, sync — is deterministic code.
 
+## Why I built it
+
+In 2014 I led a third-party risk onboarding project. The technology was never the hard
+part. What broke, over and over, was coordination: collecting and reconciling information
+from people who each held a piece of it, chasing approvals, managing who was permitted to
+see what, and never quite knowing whose version was current.
+
+Those failures aren't specific to risk onboarding. They're structural to any onboarding
+where data moves between systems under approvals and access controls — which is to say,
+most enterprise onboarding. FirstSync is the engineering response to those four lessons,
+applied to a different domain: customer-data onboarding into a B2B product.
+
+| What I hit in 2014 | What FirstSync does today |
+| --- | --- |
+| Collecting and reconciling information | Inspects the source and proposes every mapping, flagging the gaps |
+| Chasing approvals | Makes review and approval explicit, gated steps |
+| Managing permissions | Checks what the connected user can actually read, up front |
+| Figuring out which version was current | Binds approval to a specific proposal, so any change invalidates it |
+
+This is not a rebuild of that 2014 system — different domain, different data, a reference
+implementation with no customers. It is what I would build now, with the tools I did not
+have then, to kill the coordination problems I watched sink timelines a decade ago.
+
 ## The rule the design is built on
 
 Claude proposes; the system authorizes.
